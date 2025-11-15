@@ -25,16 +25,6 @@ export default function UploadComponent() {
             console.log("Catbox URL:", data.url);
         }
 
-        const NftMetadata = {
-            "name": "_akshaiii",
-            "symbol": "HUE",
-            "description": "Praise the lord hallelujah",
-            "image": data.url
-        };
-
-        const jsonString = JSON.stringify(NftMetadata);
-
-        
     };
 
     return success ? <div>someoerroroccured</div> : <div className="bg-gray-300 border-2 border-black rounded h-12 flex items-center justify-center text-sm font-medium cursor-pointer hover:bg-gray-400 transition-colors" onChange={handleUpload}>
