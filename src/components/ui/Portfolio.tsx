@@ -165,7 +165,7 @@ const Portfolio: React.FC = () => {
                   className="text-2xl font-bold hover:scale-110 transition-transform"
                   title="Home"
                 >
-                  <img className='h-7 w-7' src="https://files.catbox.moe/frizad.png" alt="" />
+                  <img className='h-8 w-7' src="https://files.catbox.moe/pcrz6w.png" alt="" />
                 </button>
 
                 {/* <a
