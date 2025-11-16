@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import UploadComponent from './upload';
 
 interface EventFormData {
@@ -26,6 +26,32 @@ const CreateEvent: React.FC = () => {
     end_time: "",
   });
 
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      event_name: "",
+      description: "",
+      total_no_attendees: "",
+      metadata_url: "",
+      attendance_code: "",
+      start_time: "",
+      end_time: "",
+    });
+  };
+
+  const handlesubmit = ()=>{
+
+  }
+
   return (
     <div className="h-150 bg-[#6315bbbc] py-4 px-2 md:px-0  font-['IBM_Plex_Mono',monospace]">
       {/* ---- Main Container (same as portfolio) ---- */}
@@ -37,6 +63,8 @@ const CreateEvent: React.FC = () => {
           <div>
             <input
               type="text"
+              value={formData.event_name}
+              onChange={handleInputChange}
               placeholder="event_name"
               className="w-full px-4 py-3 border-2 border-black rounded bg-white focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
             />
