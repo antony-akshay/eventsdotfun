@@ -10,6 +10,8 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
     const file = form.get("file") as File;
+    const event_name = form.get("event_name") as string;
+    const description = form.get("description") as string;
 
     if (!file) {
       return new Response(JSON.stringify({ error: "No file provided" }), {
@@ -29,9 +31,9 @@ export async function POST(req: Request) {
     const text = await res.text(); // Catbox returns plain text URL
 
     const NftMetadata = {
-      "name": "_akshaiii",
-      "symbol": "HUE",
-      "description": "Praise the lord hallelujah",
+      "name": event_name,
+      "symbol": "EDF",
+      "description": description,
       "image": text
     };
 
@@ -76,7 +78,7 @@ export async function POST(req: Request) {
 
     console.log("url:",data.uri);
 
-    return new Response(JSON.stringify({ url: text}), {
+    return new Response(JSON.stringify({ url: data.uri}), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

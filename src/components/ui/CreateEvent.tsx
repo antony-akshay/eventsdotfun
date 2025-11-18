@@ -2,6 +2,8 @@
 
 import React, { ChangeEvent, useState } from 'react';
 import UploadComponent from './upload';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useCounterProgram } from '../counter/counter-data-access';
 
 interface EventFormData {
   event_name: string;
@@ -14,7 +16,10 @@ interface EventFormData {
 }
 
 const CreateEvent: React.FC = () => {
+  const { publicKey, connected } = useWallet();
+  const { createEventAccount, closeEventAccount, program } = useCounterProgram();
   const [currentView] = useState<'create'>('create');
+  const [url, setUrl] = useState("");
 
   const [formData, setFormData] = useState<EventFormData>({
     event_name: "",
@@ -48,8 +53,10 @@ const CreateEvent: React.FC = () => {
     });
   };
 
-  const handlesubmit = ()=>{
+  const handlesubmit = () => {
+    if (publickey) {
 
+    }
   }
 
   return (
@@ -63,6 +70,7 @@ const CreateEvent: React.FC = () => {
           <div>
             <input
               type="text"
+              name='event_name'
               value={formData.event_name}
               onChange={handleInputChange}
               placeholder="event_name"
@@ -74,6 +82,9 @@ const CreateEvent: React.FC = () => {
           <div>
             <textarea
               rows={3}
+              name='description'
+              value={formData.description}
+              onChange={handleInputChange}
               placeholder="description"
               className="w-full px-4 py-3 border-2 border-black rounded bg-white resize-none focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
             />
@@ -83,17 +94,23 @@ const CreateEvent: React.FC = () => {
           <div>
             <input
               type="number"
+              name='total_no_attendees'
+              value={formData.total_no_attendees}
+              onChange={handleInputChange}
               placeholder="total_no_attentees"
               className="w-full px-4 py-3 border-2 border-black rounded bg-white focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
             />
           </div>
 
           {/* upload_image (gray bar) */}
-          <UploadComponent />
+          <UploadComponent event_name={formData.event_name} description={formData.description} onUploadComplete={(uploadedurl) => setUrl(uploadedurl)} />
 
           {/* attendance_code */}
           <div>
             <input
+              name='attendance_code'
+              value={formData.attendance_code}
+              onChange={handleInputChange}
               type="text"
               placeholder="attendance_code"
               className="w-full px-4 py-3 border-2 border-black rounded bg-white focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
@@ -103,12 +120,18 @@ const CreateEvent: React.FC = () => {
           {/* start_time & end_time (side-by-side) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
+              name='start_time'
               type="datetime-local"
               placeholder="start_time"
+              value={formData.start_time}
+              onChange={handleInputChange}
               className="w-full px-4 py-3 border-2 border-black rounded bg-white focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
             />
             <input
+              name='end_time'
               type="datetime-local"
+              value={formData.end_time}
+              onChange={handleInputChange}
               placeholder="end_time"
               className="w-full px-4 py-3 border-2 border-black rounded bg-white focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
             />
