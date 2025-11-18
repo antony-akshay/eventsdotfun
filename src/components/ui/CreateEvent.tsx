@@ -103,7 +103,7 @@ const CreateEvent: React.FC = () => {
   }
 
   return (
-    <div className="h-150 bg-[#6315bbbc] py-4 px-2 md:px-0  font-['IBM_Plex_Mono',monospace]">
+    <div className="h-150 bg-[#661eb8] py-4 px-2 md:px-0  font-['IBM_Plex_Mono',monospace]">
       {/* ---- Main Container (same as portfolio) ---- */}
       {/* ---- Form Content ---- */}
       <div className="py-2 mt-3 mb-3">
