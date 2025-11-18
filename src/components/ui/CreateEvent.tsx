@@ -4,6 +4,10 @@ import React, { ChangeEvent, useState } from 'react';
 import UploadComponent from './upload';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useCounterProgram } from '../counter/counter-data-access';
+import { PublicKey } from '@solana/web3.js';
+import { sha256 } from "@noble/hashes/sha256"
+import * as anchor from "@coral-xyz/anchor"
+
 
 interface EventFormData {
   event_name: string;
@@ -53,8 +57,47 @@ const CreateEvent: React.FC = () => {
     });
   };
 
-  const handlesubmit = () => {
-    if (publickey) {
+  const handlesubmit = (e:React.FormEvent) => {
+    e.preventDefault();
+    if (publicKey) {
+
+      const [eventAccountPda] = PublicKey.findProgramAddressSync(
+        [
+          Buffer.from("event"),
+          publicKey.toBuffer(),
+          Buffer.from(formData.event_name.trim())
+        ],
+        program.programId
+      );
+
+      const attendanceCodeHash = Buffer.from(
+        sha256(Buffer.from(formData.attendance_code, "utf-8"))
+      );
+      const startTimestamp = Math.floor(
+        new Date(formData.start_time).getTime() / 1000
+      );
+      const endTimestamp = Math.floor(
+        new Date(formData.end_time).getTime() / 1000
+      );
+      const startTime = new anchor.BN(startTimestamp);
+      const endTime = new anchor.BN(endTimestamp);
+
+      const [collectionMintPda] = anchor.web3.PublicKey.findProgramAddressSync(
+        [Buffer.from("collection_mint"), Buffer.from(formData.event_name.trim())],
+        program.programId
+      );
+
+      createEventAccount.mutateAsync({
+        event: eventAccountPda,
+        name: formData.event_name,
+        description: formData.description,
+        url: url,
+        attendanceCodeHash: attendanceCodeHash,
+        startTime: startTime,
+        endTime: endTime,
+        totalAttentees: parseInt(formData.total_no_attendees, 10),
+        collection_mint: collectionMintPda
+      });
 
     }
   }
@@ -146,6 +189,7 @@ const CreateEvent: React.FC = () => {
               cancel
             </button>
             <button
+              onClick={handlesubmit}
               type="submit"
               className="px-6 py-2 bg-black text-white rounded font-bold border-2 border-black hover:bg-[#6315bbbc] hover:text-black transition-colors shadow-[4px_4px_0_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
             >
