@@ -11,7 +11,7 @@ interface UploadProps{
 
 
 export default function UploadComponent({event_name,description,onUploadComplete}:UploadProps) {
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState(true);
     const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -40,7 +40,17 @@ export default function UploadComponent({event_name,description,onUploadComplete
         }
     };
 
-    return success ? <div>someoerroroccured</div> : <div className="bg-gray-300 border-2 border-black rounded h-12 flex items-center justify-center text-sm font-medium cursor-pointer hover:bg-gray-400 transition-colors" onChange={handleUpload}>
-        <input type="file" onChange={handleUpload} placeholder="upload the image" />
-    </div>;
+    return <div className="">
+  <label
+    className="bg-gray-300 border-2 border-black rounded h-12 flex items-center justify-center text-sm font-medium cursor-pointer hover:bg-gray-400 transition-colors w-full"
+  >
+    {success ? <span>Upload the image</span>:<span>Upload failed</span>}
+    <input
+      type="file"
+      className="hidden"
+      onChange={handleUpload}
+    />
+  </label>
+</div>
+
 }
