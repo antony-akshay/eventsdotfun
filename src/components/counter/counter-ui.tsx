@@ -274,7 +274,8 @@ export function CounterCreate() {
 }
 
 export function CounterList() {
-  const { accounts, getProgramAccount, getUsersRegistraionAccount } = useCounterProgram()
+  const { accounts, getProgramAccount, getUsersRegistraionAccount } = useCounterProgram();
+
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>
@@ -586,7 +587,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 function AccountItem({ account }: { account: PublicKey }) {
   const { getUsersRegistraionAccount } = useCounterProgram();
   const { data: registration, isLoading } = getUsersRegistraionAccount(account);
-
+  console.log(registration);
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-4">

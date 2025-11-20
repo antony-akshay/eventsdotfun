@@ -5,7 +5,7 @@ import Ticket from './Ticket';
 import CreateEvent from './CreateEvent';
 import logo from '../../assets/events_logo.png';
 import { WalletButton } from '../solana/solana-provider';
-import { CounterList } from '../counter/counter-ui';
+import { CounterList, RegistrationList } from '../counter/counter-ui';
 
 // Type definitions
 interface Project {
@@ -117,6 +117,7 @@ const Portfolio: React.FC = () => {
           <Ticket key={idx} />
         ))}
         <CounterList/>
+        <RegistrationList/>
       </div>
     );
   };
@@ -165,9 +166,9 @@ const Portfolio: React.FC = () => {
 
                 <button
                   className="text-2xl font-bold hover:scale-110 transition-transform"
-                  title="Home"
+                  title="twitter"
                 >
-                  <img className='h-12 w-12' src="https://files.catbox.moe/9irnnl.png" alt="" />
+                  <a href="https://x.com/eventsdotfun"><img className='h-12 w-12' src="https://files.catbox.moe/9irnnl.png" alt="" /></a>
                 </button>
 
                 {/* <a
