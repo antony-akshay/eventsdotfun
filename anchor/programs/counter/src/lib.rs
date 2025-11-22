@@ -492,7 +492,11 @@ pub struct MintNft<'info> {
     #[account(
         init,
         payer = attentee,
-        seeds = [event_account.total_attentees.to_le_bytes().as_ref()],
+        seeds = [
+            b"nft_mint".as_ref(),
+            event_account.key().as_ref(),
+            attentee.key().as_ref()
+        ],
         bump,
         mint::decimals = 0,
         mint::authority=collection_mint,

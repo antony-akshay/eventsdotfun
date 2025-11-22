@@ -294,8 +294,8 @@ export function CounterList() {
       ) : accounts.data?.length ? (
         <div className="grid md:grid-cols-2 gap-4">
           {accounts.data?.map((account) => (
-  <AccountItem key={account.publicKey.toString()} account={account.publicKey} />
-))}
+            <AccountItem key={account.publicKey.toString()} account={account.publicKey} />
+          ))}
 
         </div>
       ) : (
@@ -419,6 +419,9 @@ export function RegistrationList() {
 function RegistrationCard({ account }: { account: PublicKey }) {
   const { publicKey, connected } = useWallet();
   const { CloseRegistrationAccount, program, mintNft, accounts } = useCounterProgram();
+  const { accountQuery, registrationAccountQuery, createRegistrationAccount } = useCounterProgramAccount({
+    account,
+  })
 
   // Move useState to the top level of the component
   const [showMintModal, setShowMintModal] = useState<boolean>(false);
@@ -439,7 +442,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
     console.log("Mint code entered:", code); // This will print the 4-digit code
 
     if (!account) return;
-    console.log("we are here 1");
+    console.log("we are here 1 here");
 
     if (!registrationAccountQuery.data?.event) return;
     console.log("we are here 1.1");
@@ -538,10 +541,6 @@ function RegistrationCard({ account }: { account: PublicKey }) {
     }
   };
 
-  const { accountQuery, registrationAccountQuery, createRegistrationAccount } = useCounterProgramAccount({
-    account,
-  })
-
   const eventName = useMemo(() => registrationAccountQuery.data?.event.toString() ?? 0, [registrationAccountQuery.data?.event.toString()])
 
   return registrationAccountQuery.isLoading ? (
@@ -585,8 +584,21 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 }
 
 function AccountItem({ account }: { account: PublicKey }) {
-  const { getUsersRegistraionAccount } = useCounterProgram();
+  const { publicKey, connected } = useWallet();
+  const { getUsersRegistraionAccount, programId } = useCounterProgram();
   const { data: registration, isLoading } = getUsersRegistraionAccount(account);
+
+
+  if (!publicKey) return;
+
+  const [registrationAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("attentee"),
+      account.toBuffer(),
+      publicKey.toBuffer(),
+    ],
+    programId
+  );
   console.log(registration);
   if (isLoading) {
     return (
@@ -600,5 +612,5 @@ function AccountItem({ account }: { account: PublicKey }) {
     return <CounterCard account={account} />;
   }
 
-  return <RegistrationCard account={account} />;
+  return <RegistrationCard account={registrationAccountPda} />;
 }
