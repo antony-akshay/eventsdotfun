@@ -84,7 +84,7 @@ const Portfolio: React.FC = () => {
   const renderContent = () => {
     if (currentView === 'profile') {
       return (
-        <div className="flex flex-col items-center text-center space-y-4 p-6">
+        <div className="flex flex-col items-center text-center space-y-4 p-6 sm:mt-15">
           <img
             className="w-53 h-50"
             src="https://files.catbox.moe/4dmspx.png"
@@ -126,7 +126,7 @@ const Portfolio: React.FC = () => {
     <div className="min-h-screen bg-[#6315bbbc] py-8 md:py-20 px-4 md:px-0 overflow-x-hidden font-['IBM_Plex_Mono',monospace] text-black">
 
       {/* Fixed 400px Container */}
-      <div className="h-[700px] w-full md:w-4/5 max-w-6xl mx-auto flex flex-col">
+      <div className="h-[700px] w-full sm:h-[800px] md:w-4/5 max-w-6xl mx-auto flex flex-col">
 
         {/* Main Shadowed Container */}
         <div className="flex-1 bg-[#f9f6ef] border-[3px] border-black rounded-lg shadow-[6px_6px_0_#000] overflow-hidden flex flex-col">

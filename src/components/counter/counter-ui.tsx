@@ -547,7 +547,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
     <>
-      <Card className='mt-15'>
+      <Card className=''>
         <CardHeader>
           <CardTitle>RegistrationTicket: {eventName}</CardTitle>
           <CardDescription>

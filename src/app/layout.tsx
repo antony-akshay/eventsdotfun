@@ -4,6 +4,8 @@ import { AppProviders } from '@/components/app-providers'
 import { AppLayout } from '@/components/app-layout'
 import React from 'react'
 import Portfolio from '@/components/ui/Portfolio'
+import { Alert } from '@/components/ui/alert'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Eventsdotfun',
@@ -23,8 +25,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
         <AppProviders>
-          <AppLayout links={links}>{children}</AppLayout>
-          {/* <Portfolio/> */}
+          {/* <AppLayout links={links}>{children}</AppLayout> */}
+          <Portfolio/>
         </AppProviders>
       </body>
     </html>

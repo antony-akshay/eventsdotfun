@@ -147,3 +147,11 @@
   background-color: black !important;
   color: white !important;
 }
+
+.sonner,
+.sonner-container,
+[data-sonner] {
+  position: fixed !important;
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+}
