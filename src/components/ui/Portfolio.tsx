@@ -117,7 +117,7 @@ const Portfolio: React.FC = () => {
           <Ticket key={idx} />
         ))}
         <CounterList/>
-        <RegistrationList/>
+        {/* <RegistrationList/> */}
       </div>
     );
   };

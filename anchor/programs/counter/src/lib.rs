@@ -203,6 +203,10 @@ pub mod counter {
             return Err(ErrorCode::InvalidAttentanceCode.into());
         }
 
+        if ctx.accounts.registration_account.attentence_nft_minted {
+            return Err(ErrorCode::NftAlreadyMinted.into());
+        }
+
         let nft_name = ctx.accounts.event_account.name.to_owned()
             + ctx
                 .accounts
@@ -613,4 +617,6 @@ pub enum ErrorCode {
     InvalidAttentanceCode,
     #[msg("minting not reached")]
     NotMinitingTime,
+    #[msg("already minted")]
+    NftAlreadyMinted,
 }
