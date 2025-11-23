@@ -1,7 +1,7 @@
 "use client";
 
 import { Keypair, PublicKey } from '@solana/web3.js'
-import { ChangeEvent, useMemo, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { ExplorerLink } from '@/components/cluster/cluster-ui'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -541,38 +541,162 @@ function RegistrationCard({ account }: { account: PublicKey }) {
     }
   };
 
-  const eventName = useMemo(() => registrationAccountQuery.data?.event.toString() ?? 0, [registrationAccountQuery.data?.event.toString()])
+  const eventPubkey = useMemo(() => {
+    if (!registrationAccountQuery.data?.event) return null;
+    return new PublicKey(registrationAccountQuery.data.event);
+  }, [registrationAccountQuery.data?.event]);
+
+  const [eventAccount, setEventAccount] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchEvent() {
+      if (!eventPubkey) return;
+      const acc = await program.account.event.fetch(eventPubkey);
+      setEventAccount(acc);
+    }
+    fetchEvent();
+  }, [eventPubkey, program]);
+
+  const eventName = eventAccount?.name ?? "Loading...";
+
+  const eventMetadataUrl = eventAccount?.url ?? "";
+
+  const [imageUrl, setImageUrl] = useState<string>("");
+
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      try {
+        if (!eventMetadataUrl) return;
+
+        const response = await fetch(eventMetadataUrl);
+        const metadata = await response.json();
+
+        // metadata = { name, symbol, description, image }
+        setImageUrl(metadata.image);
+      } catch (error) {
+        console.error("Failed to fetch metadata:", error);
+      }
+    };
+
+    fetchMetadata();
+  }, [eventMetadataUrl]);
+
+
 
   return registrationAccountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
     <>
-      <Card className=''>
-        <CardHeader>
-          <CardTitle>RegistrationTicket: {eventName}</CardTitle>
-          <CardDescription>
-            Account: <ExplorerLink path={`account/${account}`} label={ellipsify(account.toString())} />
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <Button
-              variant="outline"
-              onClick={() => setShowMintModal(true)} // Fixed: wrap in arrow function
-              disabled={createRegistrationAccount.isPending}
-            >
-              Mint
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleCloseRegistration}
-              disabled={createRegistrationAccount.isPending}
-            >
-              Cancel
-            </Button>
+      <>
+        <div className="relative bg-white w-[500px] h-[250px] overflow-hidden rounded-xl ">
+          {/* Top Scalloped Edge */}
+          <div className="absolute top-0 left-0 right-0 h-2 flex -translate-y-1/2 z-10">
+            {Array.from({ length: 15 }).map((_, i) => (
+              <div
+                key={`top-${i}`}
+                className="w-4 h-4 bg-[#f9f6ef] rounded-full flex-shrink-0"
+                style={{ marginLeft: i === 0 ? 0 : '16px' }}
+              />
+            ))}
           </div>
-        </CardContent>
-      </Card>
+
+          {/* Bottom Scalloped Edge */}
+          <div className="absolute bottom-0 left-0 right-0 h-2 flex translate-y-6/2 z-10">
+            {Array.from({ length: 15 }).map((_, i) => (
+              <div
+                key={`bottom-${i}`}
+                className="w-4 h-4 bg-[#f9f6ef] rounded-full flex-shrink-0"
+                style={{ marginLeft: i === 0 ? 0 : '16px' }}
+              />
+            ))}
+          </div>
+
+          {/* Left Corner Semicircles */}
+          <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#f9f6ef] rounded-full z-20" />
+          <div className="absolute left-0 bottom-0 -translate-x-1/2 translate-y-1/2 w-8 h-8 bg-[#f9f6ef] rounded-full z-20" />
+
+          {/* Right Large Semicircle Cutout */}
+          <div className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#f9f6ef] rounded-full z-20" />
+
+          {/* Ticket Content */}
+          <div className="flex h-full relative z-5">
+            {/* Left Side – Icon */}
+            <div className="w-2/5 flex items-center justify-center p-6">
+              <div className="w-[180px] h-[160px] bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
+  {imageUrl && (
+    <img
+      src={imageUrl}
+      alt="Event NFT"
+      className="w-full h-full object-cover rounded-xl border"
+    />
+  )}
+</div>
+
+            </div>
+
+            {/* Right Side – Actual Registration Details */}
+            <div className="w-3/5 p-6 flex flex-col justify-between">
+              {/* Title + account info */}
+              <div className="space-y-3">
+                <h2 className="text-xl font-semibold text-gray-800 mt-6">
+                  {eventName}
+                </h2>
+
+                <p className="text-sm text-gray-500 break-all">
+                  Account:{" "}
+                  <ExplorerLink
+                    path={`account/${account}`}
+                    label={ellipsify(account.toString())}
+                  />
+                </p>
+              </div>
+
+              {/* Buttons */}
+              {/* Buttons */}
+              <div className="flex justify-center gap-4 mt-4">
+                {/* Cancel Button */}
+                <button
+                  onClick={handleCloseRegistration}
+                  disabled={createRegistrationAccount.isPending}
+                  className="
+      px-6 py-2 bg-white border-2 border-black rounded 
+      font-bold hover:bg-black hover:text-white 
+      transition-all shadow-[4px_4px_0_#000]
+      active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
+    "
+                >
+                  Cancel
+                </button>
+
+                {/* Mint Button */}
+                <button
+                  onClick={() => setShowMintModal(true)}
+                  disabled={createRegistrationAccount.isPending}
+                  className={`
+      px-6 py-2 rounded font-bold border-2 border-black rounded
+      transition-all shadow-[4px_4px_0_#000]
+      active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
+      ${!createRegistrationAccount.isPending
+                      ? "bg-black text-white hover:bg-[#6315bbbc] hover:text-black"
+                      : "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400 shadow-none"
+                    }
+    `}
+                >
+                  Mint
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <MintModal
+          isOpen={showMintModal}
+          onClose={() => setShowMintModal(false)}
+          onMint={handleMint}
+        />
+      </>
+
 
       <MintModal
         isOpen={showMintModal}
