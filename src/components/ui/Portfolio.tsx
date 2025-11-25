@@ -112,10 +112,10 @@ const Portfolio: React.FC = () => {
     }
     // Projects / Tickets View (Scrollable Grid)
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {allProjects.map((project, idx) => (
+      <div className="grid  gap-4">
+        {/* {allProjects.map((project, idx) => (
           <Ticket key={idx} />
-        ))}
+        ))} */}
         <CounterList/>
         {/* <RegistrationList/> */}
       </div>
@@ -126,7 +126,7 @@ const Portfolio: React.FC = () => {
     <div className="min-h-screen bg-[#6315bbbc] py-8 md:py-20 px-4 md:px-0 overflow-x-hidden font-['IBM_Plex_Mono',monospace] text-black">
 
       {/* Fixed 400px Container */}
-      <div className="h-[700px] w-full sm:h-[800px] md:w-4/5 max-w-6xl mx-auto flex flex-col">
+      <div className="h-[700px] w-full sm:h-[800px] md:w-4/5 max-w-6xl mx-auto flex flex-col lg:mt-5">
 
         {/* Main Shadowed Container */}
         <div className="flex-1 bg-[#f9f6ef] border-[3px] border-black rounded-lg shadow-[6px_6px_0_#000] overflow-hidden flex flex-col">

@@ -312,75 +312,141 @@ function CounterCard({ account }: { account: PublicKey }) {
   const { publicKey } = useWallet();
   const { program, closeEventAccount } = useCounterProgram();
 
+  const { accountQuery, createRegistrationAccount } = useCounterProgramAccount({
+    account,
+  });
 
   async function handleRegistration() {
-    console.log(publicKey);
     if (publicKey) {
       const [registrationAccountPda] = PublicKey.findProgramAddressSync(
         [
           Buffer.from("attentee"),
           account.toBuffer(),
-          publicKey.toBuffer(), // Use publicKey from useWallet()
-          // Buffer.from(formData.event_name.trim()) // Trim whitespace
+          publicKey.toBuffer(),
         ],
         program.programId
       );
 
-      await createRegistrationAccount.mutateAsync(
-        {
-          event: account,
-          registration: registrationAccountPda
-        }
-      )
+      await createRegistrationAccount.mutateAsync({
+        event: account,
+        registration: registrationAccountPda,
+      });
     }
   }
 
   async function handleCloseEvent() {
     if (publicKey) {
-      await closeEventAccount.mutateAsync(
-        {
-          event: account
-        }
-      )
+      await closeEventAccount.mutateAsync({
+        event: account,
+      });
     }
   }
 
-  const { accountQuery, createRegistrationAccount } = useCounterProgramAccount({
-    account,
-  })
+  const eventName = useMemo(
+    () => accountQuery.data?.name ?? "Loading...",
+    [accountQuery.data?.name]
+  );
 
-  const eventName = useMemo(() => accountQuery.data?.name ?? 0, [accountQuery.data?.name])
+  const eventDescription = accountQuery.data?.description ?? "";
+  const eventMetadataUrl = accountQuery.data?.url ?? "";
+
+  const [imageUrl, setImageUrl] = useState<string>("");
+
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      try {
+        if (!eventMetadataUrl) return;
+
+        const response = await fetch(eventMetadataUrl);
+        const metadata = await response.json();
+        setImageUrl(metadata.image);
+      } catch (error) {
+        console.error("Failed to fetch metadata:", error);
+      }
+    };
+
+    fetchMetadata();
+  }, [eventMetadataUrl]);
+
 
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
-    <Card>
-      <CardHeader>
-        <CardTitle>Event: {eventName}</CardTitle>
-        <CardDescription>
-          Account: <ExplorerLink path={`account/${account}`} label={ellipsify(account.toString())} />
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            onClick={handleRegistration}
-            disabled={createRegistrationAccount.isPending}
-          >
-            Register
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleCloseEvent}
-            disabled={createRegistrationAccount.isPending}
-          >
-            Close
-          </Button>
+    <div className="relative bg-white w-[500px] h-[250px] overflow-hidden rounded-xl border border-black shadow-[6px_6px_0_#000]">
+
+      {/* MAIN CONTENT */}
+      <div className="flex h-full">
+
+        {/* LEFT SIDE - IMAGE */}
+        <div className="w-2/5 flex items-center justify-center p-6">
+          <div className="w-[180px] h-[160px] bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg overflow-hidden flex items-center justify-center">
+            {imageUrl && (
+              <img
+                src={imageUrl}
+                alt="Event"
+                className="w-full h-full object-cover rounded-xl border"
+              />
+            )}
+          </div>
         </div>
-      </CardContent>
-    </Card>
-  )
+
+        {/* RIGHT SIDE CONTENT */}
+        <div className="w-3/5 p-6 flex flex-col justify-between">
+
+          {/* Title + Description */}
+          <div className="space-y-3">
+            <h2 className="text-xl font-semibold text-gray-800 mt-6">
+              {eventName}
+            </h2>
+
+            <p className="text-sm text-gray-500">
+              {eventDescription}
+            </p>
+          </div>
+
+          {/* BUTTONS */}
+          <div className="flex justify-center gap-4 mt-4">
+            {/* Register */}
+            <button
+              onClick={handleRegistration}
+              disabled={createRegistrationAccount.isPending}
+              className={`
+                px-6 py-2 bg-white border-2 border-black rounded
+                font-bold hover:bg-black hover:text-white
+                transition-all shadow-[4px_4px_0_#000]
+                active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
+                ${createRegistrationAccount.isPending
+                  ? "cursor-not-allowed bg-gray-200 text-gray-500 border-gray-400 shadow-none"
+                  : ""
+                }
+              `}
+            >
+              Register
+            </button>
+
+            {/* Close */}
+            <button
+              onClick={handleCloseEvent}
+              disabled={createRegistrationAccount.isPending}
+              className={`
+                px-6 py-2 bg-white border-2 border-black rounded font-bold
+                transition-all shadow-[4px_4px_0_#000]
+                active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
+                ${createRegistrationAccount.isPending
+                  ? "cursor-not-allowed bg-gray-200 text-gray-500 border-gray-400 shadow-none"
+                  : "text-red-600 hover:bg-red-200"
+                }
+              `}
+            >
+              Close
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
 }
 
 export function RegistrationList() {
@@ -561,6 +627,8 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 
   const eventMetadataUrl = eventAccount?.url ?? "";
 
+  const eventDescription = eventAccount?.description ?? "";
+
   const [imageUrl, setImageUrl] = useState<string>("");
 
   useEffect(() => {
@@ -623,14 +691,14 @@ function RegistrationCard({ account }: { account: PublicKey }) {
             {/* Left Side – Icon */}
             <div className="w-2/5 flex items-center justify-center p-6">
               <div className="w-[180px] h-[160px] bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
-  {imageUrl && (
-    <img
-      src={imageUrl}
-      alt="Event NFT"
-      className="w-full h-full object-cover rounded-xl border"
-    />
-  )}
-</div>
+                {imageUrl && (
+                  <img
+                    src={imageUrl}
+                    alt="Event NFT"
+                    className="w-full h-full object-cover rounded-xl border"
+                  />
+                )}
+              </div>
 
             </div>
 
@@ -643,11 +711,12 @@ function RegistrationCard({ account }: { account: PublicKey }) {
                 </h2>
 
                 <p className="text-sm text-gray-500 break-all">
-                  Account:{" "}
-                  <ExplorerLink
+                  {/* Account:{" "} */}
+                  {eventDescription}
+                  {/* <ExplorerLink
                     path={`account/${account}`}
                     label={ellipsify(account.toString())}
-                  />
+                  /> */}
                 </p>
               </div>
 
