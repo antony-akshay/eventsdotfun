@@ -57,7 +57,7 @@ const CreateEvent: React.FC = () => {
     });
   };
 
-  const handlesubmit = (e:React.FormEvent) => {
+  const handleSubmit = (e:React.FormEvent) => {
     e.preventDefault();
     if (publicKey) {
 
@@ -183,13 +183,15 @@ const CreateEvent: React.FC = () => {
           {/* Buttons */}
           <div className="flex justify-center gap-4 pt-2">
             <button
+              onClick={handleCancel}
               type="button"
               className="px-6 py-2 border-2 border-black rounded bg-white font-bold hover:bg-black hover:text-white transition-colors"
             >
               cancel
             </button>
             <button
-              onClick={handlesubmit}
+              onClick={handleSubmit}
+              disabled={createEventAccount.isPending}
               type="submit"
               className="px-6 py-2 bg-black text-white rounded font-bold border-2 border-black hover:bg-[#6315bbbc] hover:text-black transition-colors shadow-[4px_4px_0_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
             >

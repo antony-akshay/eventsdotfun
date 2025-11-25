@@ -402,6 +402,10 @@ function CounterCard({ account }: { account: PublicKey }) {
             <p className="text-sm text-gray-500">
               {eventDescription}
             </p>
+
+            <p className="text-sm text-gray-500">
+              {accountQuery.data?.creator.toString()}
+            </p>
           </div>
 
           {/* BUTTONS */}
