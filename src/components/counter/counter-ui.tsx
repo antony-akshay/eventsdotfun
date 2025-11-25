@@ -18,7 +18,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { log } from 'console'
-import Ticket from '../ui/Ticket'
+// import Ticket from '../ui/Ticket'
 import MintModal from './MintModal'
 
 
@@ -268,7 +268,7 @@ export function CounterCreate() {
           </div>
         </div>
       </div>
-      <Ticket />
+      {/* <Ticket /> */}
     </div>
   )
 }
@@ -411,15 +411,14 @@ function CounterCard({ account }: { account: PublicKey }) {
               onClick={handleRegistration}
               disabled={createRegistrationAccount.isPending}
               className={`
-                px-6 py-2 bg-white border-2 border-black rounded
-                font-bold hover:bg-black hover:text-white
-                transition-all shadow-[4px_4px_0_#000]
-                active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
-                ${createRegistrationAccount.isPending
-                  ? "cursor-not-allowed bg-gray-200 text-gray-500 border-gray-400 shadow-none"
-                  : ""
+      px-6 py-2 rounded font-bold border-2 border-black rounded
+      transition-all shadow-[4px_4px_0_#000]
+      active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
+      ${!createRegistrationAccount.isPending
+                  ? "bg-black text-white hover:bg-[#6315bbbc] hover:text-black"
+                  : "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400 shadow-none"
                 }
-              `}
+    `}
             >
               Register
             </button>
@@ -434,7 +433,7 @@ function CounterCard({ account }: { account: PublicKey }) {
                 active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
                 ${createRegistrationAccount.isPending
                   ? "cursor-not-allowed bg-gray-200 text-gray-500 border-gray-400 shadow-none"
-                  : "text-red-600 hover:bg-red-200"
+                  : "text-red-600 hover:bg-red-500 hover:text-white"
                 }
               `}
             >
@@ -449,38 +448,38 @@ function CounterCard({ account }: { account: PublicKey }) {
   );
 }
 
-export function RegistrationList() {
-  const { registrationAccounts, getProgramAccount } = useCounterProgram()
+// export function RegistrationList() {
+//   const { registrationAccounts, getProgramAccount } = useCounterProgram()
 
-  if (getProgramAccount.isLoading) {
-    return <span className="loading loading-spinner loading-lg"></span>
-  }
-  if (!getProgramAccount.data?.value) {
-    return (
-      <div className="alert alert-info flex justify-center">
-        <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
-      </div>
-    )
-  }
-  return (
-    <div className={'space-y-6'}>
-      {registrationAccounts.isLoading ? (
-        <span className="loading loading-spinner loading-lg"></span>
-      ) : registrationAccounts.data?.length ? (
-        <div className="grid md:grid-cols-2 gap-4">
-          {registrationAccounts.data?.map((account) => (
-            <RegistrationCard key={account.publicKey.toString()} account={account.publicKey} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center mt-10">
-          <h2 className={'text-2xl'}>No accounts</h2>
-          No Registration accounts found.
-        </div>
-      )}
-    </div>
-  )
-}
+//   if (getProgramAccount.isLoading) {
+//     return <span className="loading loading-spinner loading-lg"></span>
+//   }
+//   if (!getProgramAccount.data?.value) {
+//     return (
+//       <div className="alert alert-info flex justify-center">
+//         <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
+//       </div>
+//     )
+//   }
+//   return (
+//     <div className={'space-y-6'}>
+//       {registrationAccounts.isLoading ? (
+//         <span className="loading loading-spinner loading-lg"></span>
+//       ) : registrationAccounts.data?.length ? (
+//         <div className="grid md:grid-cols-2 gap-4">
+//           {registrationAccounts.data?.map((account) => (
+//             <RegistrationCard key={account.publicKey.toString()} account={account.publicKey} />
+//           ))}
+//         </div>
+//       ) : (
+//         <div className="text-center mt-10">
+//           <h2 className={'text-2xl'}>No accounts</h2>
+//           No Registration accounts found.
+//         </div>
+//       )}
+//     </div>
+//   )
+// }
 
 function RegistrationCard({ account }: { account: PublicKey }) {
   const { publicKey, connected } = useWallet();
@@ -726,7 +725,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
                 {/* Cancel Button */}
                 <button
                   onClick={handleCloseRegistration}
-                  disabled={createRegistrationAccount.isPending}
+                  disabled={CloseRegistrationAccount.isPending}
                   className="
       px-6 py-2 bg-white border-2 border-black rounded 
       font-bold hover:bg-black hover:text-white 
@@ -740,12 +739,12 @@ function RegistrationCard({ account }: { account: PublicKey }) {
                 {/* Mint Button */}
                 <button
                   onClick={() => setShowMintModal(true)}
-                  disabled={createRegistrationAccount.isPending}
+                  disabled={mintNft.isPending}
                   className={`
       px-6 py-2 rounded font-bold border-2 border-black rounded
       transition-all shadow-[4px_4px_0_#000]
       active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
-      ${!createRegistrationAccount.isPending
+      ${!mintNft.isPending
                       ? "bg-black text-white hover:bg-[#6315bbbc] hover:text-black"
                       : "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400 shadow-none"
                     }

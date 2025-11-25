@@ -5,76 +5,7 @@ import Ticket from './Ticket';
 import CreateEvent from './CreateEvent';
 import logo from '../../assets/events_logo.png';
 import { WalletButton } from '../solana/solana-provider';
-import { CounterList, RegistrationList } from '../counter/counter-ui';
-
-// Type definitions
-interface Project {
-  name: string;
-  description: string;
-  repo: string;
-  tech: string[];
-  stack: string;
-}
-
-// Project data
-const allProjects: Project[] = [
-  {
-    name: "zarka-app",
-    description: "Zarka App is like Zomato for tailoring — a platform connecting users with tailors for stitching orders and home delivery.",
-    repo: "https://github.com/antony-akshay/zarka-app",
-    tech: ["Flutter", "Node.js"],
-    stack: "Flutter"
-  },
-  {
-    name: "wei",
-    description: "Wei is an event management app like Luma and River for ticketing, RSVP tracking, and community event organization.",
-    repo: "https://github.com/antony-akshay/wei",
-    tech: ["Flutter"],
-    stack: "Flutter"
-  },
-  {
-    name: "eventsdotfun",
-    description: "Proof of Attendance Protocol (POAP) app that lets organizers issue verifiable blockchain badges to attendees.",
-    repo: "https://github.com/antony-akshay/zyra",
-    tech: ["Solana", "React", "Vite", "Anchor"],
-    stack: "Solana"
-  },
-  {
-    name: "depin-uptime",
-    description: "Solana-based uptime tracker that logs website health on-chain for transparent monitoring.",
-    repo: "https://github.com/antony-akshay/depin-uptime",
-    tech: ["Clerk", "React", "Prisma", "Solana", "Anchor"],
-    stack: "Solana"
-  },
-  {
-    name: "portfolio-site",
-    description: "A personal portfolio website showcasing my projects and skills, built with React.",
-    repo: "https://github.com/antony-akshay/portfolio",
-    tech: ["React"],
-    stack: "React"
-  },
-  {
-    name: "dashboard-ui",
-    description: "A clean and responsive dashboard UI built with React and TailwindCSS.",
-    repo: "https://github.com/antony-akshay/sqaris",
-    tech: ["React"],
-    stack: "React"
-  },
-  {
-    name: "smart-glass-controller",
-    description: "Java app connecting to Arduino smart spectacles via Bluetooth for real-time time sync and notifications.",
-    repo: "https://github.com/antony-akshay/smart-glass-controller",
-    tech: ["Java", "Bluetooth APIs"],
-    stack: "Java"
-  },
-  {
-    name: "rotato",
-    description: "Rotato — a decentralized ROSCA (chitty) platform built on Ethereum using Pyth Network for entropy, ENS for identity, and Kadena Scaffold for development.",
-    repo: "https://github.com/antony-akshay/rotato/",
-    tech: ["ENS", "PYTH_ENTROPY", "KADENA"],
-    stack: "Ethereum"
-  }
-];
+import { CounterList } from '../counter/counter-ui';
 
 type ViewType = 'projects' | 'profile' | 'createnewevent' | 'events';
 
@@ -103,25 +34,18 @@ const Portfolio: React.FC = () => {
 
     if (currentView === 'events') {
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {allProjects.map((project, idx) => (
-            <Ticket key={idx} />
-          ))}
+        <div className="grid  gap-4">
+          <CounterList />
         </div>
       );
     }
-    // Projects / Tickets View (Scrollable Grid)
     return (
       <div className="grid  gap-4">
-        {/* {allProjects.map((project, idx) => (
-          <Ticket key={idx} />
-        ))} */}
-        <CounterList/>
-        {/* <RegistrationList/> */}
+        <CounterList />
       </div>
     );
   };
-  // 74c04bbc
+  
   return (
     <div className="min-h-screen bg-[#6315bbbc] py-8 md:py-20 px-4 md:px-0 overflow-x-hidden font-['IBM_Plex_Mono',monospace] text-black">
 
