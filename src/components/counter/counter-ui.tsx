@@ -1,7 +1,7 @@
 "use client";
 
 import { Keypair, PublicKey } from '@solana/web3.js'
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { ExplorerLink } from '@/components/cluster/cluster-ui'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -352,10 +352,15 @@ function CounterCard({ account }: { account: PublicKey }) {
 
   const [imageUrl, setImageUrl] = useState<string>("");
 
+  const lastFetchedUrl = useRef<string | null>(null);
+
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
         if (!eventMetadataUrl) return;
+        if (lastFetchedUrl.current === eventMetadataUrl) return; // avoid repeat
+
+        lastFetchedUrl.current = eventMetadataUrl;
 
         const response = await fetch(eventMetadataUrl);
         const metadata = await response.json();
@@ -369,10 +374,13 @@ function CounterCard({ account }: { account: PublicKey }) {
   }, [eventMetadataUrl]);
 
 
+
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
-    <div className="relative bg-white w-[500px] h-[250px] overflow-hidden rounded-xl border border-black shadow-[6px_6px_0_#000]">
+    <div className="relative bg-white w-[500px] h-[250px] overflow-hidden rounded-xl border border-black 
+    // {shadow-[6px_6px_0_#000]}
+    ">
 
       {/* MAIN CONTENT */}
       <div className="flex h-full">
@@ -404,8 +412,11 @@ function CounterCard({ account }: { account: PublicKey }) {
             </p>
 
             <p className="text-sm text-gray-500">
-              {accountQuery.data?.creator.toString()}
+              {accountQuery.data?.creator
+                ? `${accountQuery.data.creator.toString().slice(0, 3)}...${accountQuery.data.creator.toString().slice(-4)}`
+                : ""}
             </p>
+
           </div>
 
           {/* BUTTONS */}
@@ -610,21 +621,31 @@ function RegistrationCard({ account }: { account: PublicKey }) {
     }
   };
 
+  // AFTER
+  const eventKeyStr = registrationAccountQuery.data?.event?.toString() ?? null;
+
   const eventPubkey = useMemo(() => {
-    if (!registrationAccountQuery.data?.event) return null;
-    return new PublicKey(registrationAccountQuery.data.event);
-  }, [registrationAccountQuery.data?.event]);
+    if (!eventKeyStr) return null;
+    return new PublicKey(eventKeyStr);
+  }, [eventKeyStr]);
 
   const [eventAccount, setEventAccount] = useState<any>(null);
+  const lastFetchedEvent = useRef<string | null>(null);
 
   useEffect(() => {
     async function fetchEvent() {
       if (!eventPubkey) return;
+
+      const keyStr = eventPubkey.toString();
+      if (lastFetchedEvent.current === keyStr) return; // prevent refetch loop
+      lastFetchedEvent.current = keyStr;
+
       const acc = await program.account.event.fetch(eventPubkey);
       setEventAccount(acc);
     }
     fetchEvent();
   }, [eventPubkey, program]);
+
 
   const eventName = eventAccount?.name ?? "Loading...";
 
@@ -634,15 +655,18 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 
   const [imageUrl, setImageUrl] = useState<string>("");
 
+  const lastFetchedUrl = useRef<string | null>(null);
+
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
         if (!eventMetadataUrl) return;
+        if (lastFetchedUrl.current === eventMetadataUrl) return; // avoid repeat
+
+        lastFetchedUrl.current = eventMetadataUrl;
 
         const response = await fetch(eventMetadataUrl);
         const metadata = await response.json();
-
-        // metadata = { name, symbol, description, image }
         setImageUrl(metadata.image);
       } catch (error) {
         console.error("Failed to fetch metadata:", error);
@@ -651,6 +675,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 
     fetchMetadata();
   }, [eventMetadataUrl]);
+
 
 
 
@@ -780,33 +805,24 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 }
 
 function AccountItem({ account }: { account: PublicKey }) {
-  const { publicKey, connected } = useWallet();
-  const { getUsersRegistraionAccount, programId } = useCounterProgram();
-  const { data: registration, isLoading } = getUsersRegistraionAccount(account);
+  const { publicKey } = useWallet();
+  const { registrationAccounts } = useCounterProgram();
 
+  if (!publicKey) return null;
 
-  if (!publicKey) return;
+  const regList = registrationAccounts.data ?? [];
 
-  const [registrationAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      Buffer.from("attentee"),
-      account.toBuffer(),
-      publicKey.toBuffer(),
-    ],
-    programId
+  // Find the registration for this user + event
+  const registration = regList.find((reg) =>
+    reg.account.attentee.equals(publicKey) &&
+    reg.account.event.equals(account)
   );
-  console.log(registration);
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center p-4">
-        <span className="loading loading-spinner loading-md"></span>
-      </div>
-    );
+
+  // 🔥 If user already registered → return the actual on-chain registration account
+  if (registration) {
+    return <RegistrationCard account={registration.publicKey} />;
   }
 
-  if (!registration) {
-    return <CounterCard account={account} />;
-  }
-
-  return <RegistrationCard account={registrationAccountPda} />;
+  // Otherwise → show the "register" card
+  return <CounterCard account={account} />;
 }

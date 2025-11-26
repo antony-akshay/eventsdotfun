@@ -1,12 +1,11 @@
 "use client";
 
 import { getEventProgram, getEventProgramId } from '@project/anchor'
-import { Cluster, PublicKey, ComputeBudgetProgram, TransactionInstruction, Transaction } from '@solana/web3.js'
+import { Cluster, PublicKey, ComputeBudgetProgram} from '@solana/web3.js'
 import { TOKEN_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { useCluster } from '@/components/cluster/cluster-data-access'
-// import { useAnchorProvider } from '@/components/solana/use-anchor-provider'
 import { useTransactionToast } from '@/components/use-transaction-toast'
 import { toast } from 'sonner'
 import * as anchor from "@coral-xyz/anchor"

@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Ticket from './Ticket';
 import CreateEvent from './CreateEvent';
-import logo from '../../assets/events_logo.png';
 import { WalletButton } from '../solana/solana-provider';
 import { CounterList } from '../counter/counter-ui';
 
@@ -45,7 +43,7 @@ const Portfolio: React.FC = () => {
       </div>
     );
   };
-  
+
   return (
     <div className="min-h-screen bg-[#6315bbbc] py-8 md:py-20 px-4 md:px-0 overflow-x-hidden font-['IBM_Plex_Mono',monospace] text-black">
 
@@ -94,15 +92,6 @@ const Portfolio: React.FC = () => {
                 >
                   <a href="https://x.com/eventsdotfun"><img className='h-12 w-12' src="https://files.catbox.moe/9irnnl.png" alt="" /></a>
                 </button>
-
-                {/* <a
-                  href="https://github.com/eventsdotfun"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm md:text-base font-bold border-b border-dashed border-black hover:bg-black hover:text-white px-2 py-1 transition-colors"
-                >
-                  Connect
-                </a> */}
                 <WalletButton />
               </div>
             </div>

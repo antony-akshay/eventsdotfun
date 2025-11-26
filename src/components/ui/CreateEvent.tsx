@@ -20,9 +20,8 @@ interface EventFormData {
 }
 
 const CreateEvent: React.FC = () => {
-  const { publicKey, connected } = useWallet();
-  const { createEventAccount, closeEventAccount, program } = useCounterProgram();
-  const [currentView] = useState<'create'>('create');
+  const { publicKey } = useWallet();
+  const { createEventAccount, program } = useCounterProgram();
   const [url, setUrl] = useState("");
 
   const [formData, setFormData] = useState<EventFormData>({
@@ -57,55 +56,53 @@ const CreateEvent: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e:React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (publicKey) {
+    if (!publicKey) return;
 
-      const [eventAccountPda] = PublicKey.findProgramAddressSync(
-        [
-          Buffer.from("event"),
-          publicKey.toBuffer(),
-          Buffer.from(formData.event_name.trim())
-        ],
-        program.programId
-      );
+    const [eventAccountPda] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("event"),
+        publicKey.toBuffer(),
+        Buffer.from(formData.event_name.trim())
+      ],
+      program.programId
+    );
 
-      const attendanceCodeHash = Buffer.from(
-        sha256(Buffer.from(formData.attendance_code, "utf-8"))
-      );
-      const startTimestamp = Math.floor(
-        new Date(formData.start_time).getTime() / 1000
-      );
-      const endTimestamp = Math.floor(
-        new Date(formData.end_time).getTime() / 1000
-      );
-      const startTime = new anchor.BN(startTimestamp);
-      const endTime = new anchor.BN(endTimestamp);
+    const attendanceCodeHash = Buffer.from(
+      sha256(Buffer.from(formData.attendance_code, "utf-8"))
+    );
 
-      const [collectionMintPda] = anchor.web3.PublicKey.findProgramAddressSync(
-        [Buffer.from("collection_mint"), Buffer.from(formData.event_name.trim())],
-        program.programId
-      );
+    const startTimestamp = Math.floor(
+      new Date(formData.start_time).getTime() / 1000
+    );
+    const endTimestamp = Math.floor(
+      new Date(formData.end_time).getTime() / 1000
+    );
 
-      createEventAccount.mutateAsync({
-        event: eventAccountPda,
-        name: formData.event_name,
-        description: formData.description,
-        url: url,
-        attendanceCodeHash: attendanceCodeHash,
-        startTime: startTime,
-        endTime: endTime,
-        totalAttentees: parseInt(formData.total_no_attendees, 10),
-        collection_mint: collectionMintPda
-      });
+    const startTime = new anchor.BN(startTimestamp);
+    const endTime = new anchor.BN(endTimestamp);
 
-    }
+    const [collectionMintPda] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("collection_mint"), Buffer.from(formData.event_name.trim())],
+      program.programId
+    );
+
+    createEventAccount.mutateAsync({
+      event: eventAccountPda,
+      name: formData.event_name,
+      description: formData.description,
+      url: url,
+      attendanceCodeHash: attendanceCodeHash,
+      startTime: startTime,
+      endTime: endTime,
+      totalAttentees: parseInt(formData.total_no_attendees, 10),
+      collection_mint: collectionMintPda
+    });
   }
 
   return (
     <div className="xs:h-150 lg:h-[650px] bg-[#661eb8] py-4 px-2 md:px-0  font-['IBM_Plex_Mono',monospace]">
-      {/* ---- Main Container (same as portfolio) ---- */}
-      {/* ---- Form Content ---- */}
       <div className="py-2 mt-3 mb-3">
         <form className="max-w-2xl mx-auto space-y-5">
 
@@ -128,6 +125,7 @@ const CreateEvent: React.FC = () => {
               name='description'
               value={formData.description}
               onChange={handleInputChange}
+              maxLength={15}
               placeholder="description"
               className="w-full px-4 py-3 border-2 border-black rounded bg-white resize-none focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
             />
@@ -155,6 +153,7 @@ const CreateEvent: React.FC = () => {
               value={formData.attendance_code}
               onChange={handleInputChange}
               type="text"
+              maxLength={4}
               placeholder="attendance_code"
               className="w-full px-4 py-3 border-2 border-black rounded bg-white focus:outline-none focus:shadow-[4px_4px_0_#000] transition-shadow"
             />
