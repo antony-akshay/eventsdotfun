@@ -14,11 +14,10 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import {
   getAssociatedTokenAddressSync,
   createAssociatedTokenAccountInstruction,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID as SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import { log } from 'console'
-// import Ticket from '../ui/Ticket'
 import MintModal from './MintModal'
 
 
@@ -514,12 +513,90 @@ function RegistrationCard({ account }: { account: PublicKey }) {
     })
   }
 
-  // Add the handleMint function
+  const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+    "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+  );
+
+  function getMetadataPDA(mint: PublicKey): PublicKey {
+    return PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("metadata"),
+        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+        mint.toBuffer(),
+      ],
+      TOKEN_METADATA_PROGRAM_ID
+    )[0];
+  }
+  function getMasterEditionPDA(mint: PublicKey): PublicKey {
+    return PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("metadata"),
+        TOKEN_METADATA_PROGRAM_ID.toBuffer(),
+        mint.toBuffer(),
+        Buffer.from("edition"),
+      ],
+      TOKEN_METADATA_PROGRAM_ID
+    )[0];
+  }
+  function getCollectionMintPDA(name: string, programId: PublicKey) {
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from("collection_mint"), Buffer.from(name)],
+      programId
+    )[0];
+  }
+  function getCollectionTokenAccountPDA(name: string, programId: PublicKey) {
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from("collection_associated_token"), Buffer.from(name)],
+      programId
+    )[0];
+  }
+
+  function getNftMintPDA(registrationPda: PublicKey, programId: PublicKey) {
+    return PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("nft_mint"),
+        registrationPda.toBuffer()       // MUST match on-chain seeds
+      ],
+      programId
+    )[0];
+  }
+
+  // Associated token account PDA helper (owner, token program, mint) -> associated token program
+  function getAssociatedTokenAddressSync(mint: PublicKey, owner: PublicKey) {
+    return PublicKey.findProgramAddressSync(
+      [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+      SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
+    )[0];
+  }
+
+  function getEventPDA(payer: PublicKey, name: string, programId: PublicKey) {
+    return PublicKey.findProgramAddressSync(
+      [Buffer.from("event"), payer.toBuffer(), Buffer.from(name)],
+      programId
+    )[0];
+  }
+
   const handleMint = async (code: string): Promise<void> => {
-    const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
-      "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-    );
-    console.log("Mint code entered:", code); // This will print the 4-digit code
+    if (!publicKey) return;
+    const eventAcc = await program.account.event.fetch(registrationAccountQuery.data?.event!);
+    const eventName = accountQuery.data?.name ?? "Loading...";
+    const eventPdanew = getEventPDA(publicKey, eventName, program.programId);
+    const collectionMintPdanew = getCollectionMintPDA(eventName, program.programId);
+    const collectionTokenAccountPdanew = getCollectionTokenAccountPDA(eventName, program.programId);
+    const nftMintPdanew = getNftMintPDA(account, program.programId);
+    const childMetadataPdanew = getMetadataPDA(nftMintPdanew);
+    const childMasterEditionPdanew = getMasterEditionPDA(nftMintPdanew);
+    const destinationAtanew = getAssociatedTokenAddressSync(nftMintPdanew, publicKey);
+
+    const collectionMetadataPda = getMetadataPDA(collectionMintPdanew);
+    const collectionMasterEditionPda = getMasterEditionPDA(collectionMintPdanew);
+
+    console.log("eventPda:", eventPdanew.toString());
+    console.log("collectionMintPda:", collectionMintPdanew.toBase58());
+    console.log("collectionTokenAccountPda:", collectionTokenAccountPdanew.toBase58());
+    console.log("collectionMetadataPda:", collectionMetadataPda.toBase58());
+
+    console.log("Mint code entered:", code);
 
     if (!account) return;
     console.log("we are here 1 here");
@@ -538,11 +615,18 @@ function RegistrationCard({ account }: { account: PublicKey }) {
     const EventAccount = await program.account.event.fetch(
       registrationAccountQuery.data?.event
     );
+    console.log("eventAccount for this account:", EventAccount.name);
+    console.log("registrationAccontQuery for event: ", registrationAccountQuery.data?.event.toString());
 
-    const [nftMintPda] = await PublicKey.findProgramAddress(
-      [Buffer.from(Uint8Array.of(...new anchor.BN(EventAccount.totalAttentees.toString()).toArray("le", 8)))],
-      program.programId
+    const [nftMintPda] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("nftmint"),
+        account.toBuffer()
+      ],
+      program.programId,
     );
+
+    console.log("inside counter-ui nftmintpda:", nftMintPda);
 
     const nftMint = new PublicKey(nftMintPda);
 
@@ -584,30 +668,45 @@ function RegistrationCard({ account }: { account: PublicKey }) {
       TOKEN_METADATA_PROGRAM_ID
     );
 
-    const destinationAta = getAssociatedTokenAddressSync(
-      nftMint,               // mint
-      publicKey,              // owner
-      false,                 // allowOwnerOffCurve (false for wallet)
-      TOKEN_PROGRAM_ID,
-      ASSOCIATED_TOKEN_PROGRAM_ID
-    );
+    const destinationAta = getAssociatedTokenAddressSync(nftMint, publicKey);
 
     console.log("we are here");
     console.log("Event pubkey:", registrationAccountQuery.data?.event?.toString());
     console.log("Event account:", EventAccount);
 
+    console.log("Program Id:", program.programId.toBase58());
+
+    console.log("User wallet publicKey:", publicKey?.toBase58());
+
+    console.log("Event Account PDA:", registrationAccountQuery.data?.event?.toBase58());
+
+    console.log("Derived nft_mint PDA:", nftMintPda.toBase58());
+
+    console.log("Registration Account PDA:", account.toBase58());
+
+    console.log("Collection Mint:", EventAccount.collectionMint.toBase58());
+
+    console.log("Mint accounts to pass:", {
+      eventAccount: registrationAccountQuery.data?.event.toBase58(),
+      registrationAccount: account.toBase58(),
+      collectionMint: EventAccount.collectionMint.toBase58(),
+      nftMint: nftMintPda.toBase58(),
+      // other metadata accounts...
+    });
+
+
     try {
       await mintNft.mutateAsync({
-        event: registrationAccountQuery.data?.event,
+        event: registrationAccountQuery.data?.event!,
         registration: account,
-        attentance_code: attendanceCodeHash,
-        nftMintPda: nftMintPda,
-        child_nft_metadata: ChildNftmetadataPda,
-        child_nft_master_edition: ChildNftmasterEditionPda,
+        attentance_code: attendanceCodeHash, 
+        collection_mint: collectionMintPdanew,
+        nftMintPda: nftMintPdanew,
+        child_nft_metadata: childMetadataPdanew,
+        child_nft_master_edition: childMasterEditionPdanew,
         metadata: metadataPda,
         master_edition: masterEditionPda,
-        destination: destinationAta,
-        collection_mint: EventAccount.collectionMint,
+        destination: destinationAtanew
       })
       // // Your mint logic here - adjust according to your mintNft function
       // await mintNft.mutateAsync({ 

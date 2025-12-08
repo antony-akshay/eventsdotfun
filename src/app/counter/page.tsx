@@ -1,5 +1,5 @@
-import CounterFeature from '@/components/counter/counter-feature'
+import Portfolio from '@/components/ui/Portfolio'
 
 export default function Page() {
-  return <CounterFeature />
+  return <Portfolio />
 }

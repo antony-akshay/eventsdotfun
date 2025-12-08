@@ -14,7 +14,8 @@ use anchor_spl::metadata::{
     SetAndVerifySizedCollectionItem, SignMetadata,
 };
 
-declare_id!("Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe");
+// Count3AcZucFDPSFBAeHkQ6AvttieKUkyJ8HiQGhQwe
+declare_id!("QgHcKbZbXDBLJc9yFXx7gmbobZK9QbDsaWkdXY2rQcV");
 
 pub const ANCHOR_DISCRIMINATOR_SIZE: usize = 8;
 
@@ -36,11 +37,9 @@ pub mod counter {
         total_attentees: u32,
         collection_mint: Pubkey,
     ) -> Result<()> {
-
-
-        if start_time <= end_time {
-            return Err(ErrorCode::InvalidEventTime.into());
-        }
+        // if start_time <= end_time {
+        //     return Err(ErrorCode::InvalidEventTime.into());
+        // }
 
         *ctx.accounts.event_account = Event {
             creator: *ctx.accounts.payer.key,
@@ -207,8 +206,39 @@ pub mod counter {
     }
 
     pub fn mint_nft(ctx: Context<MintNft>, attentance_code: [u8; 32]) -> Result<()> {
+        for acc in ctx.remaining_accounts.iter() {
+            msg!("Remaining account: {:?}", acc.key);
+        }
+
         let clock = Clock::get()?;
 
+        msg!(
+            "MintNft: event_account: {:?}",
+            ctx.accounts.event_account.key()
+        );
+        msg!("MintNft: attentee: {:?}", ctx.accounts.attentee.key());
+        msg!(
+            "MintNft: nft_mint account passed: {:?}",
+            ctx.accounts.nft_mint.key()
+        );
+
+        let registration_account = ctx.accounts.registration_account.key();
+
+        // let event_account = ctx.accounts.event_account.key();
+        
+        let pda_seeds = &[
+            b"nft_mint".as_ref(),
+            registration_account.as_ref(),
+        ];
+
+        let (calculated_pda, bump) = Pubkey::find_program_address(pda_seeds, ctx.program_id);
+        msg!("MintNft: PDA calculated on-chain: {:?}", calculated_pda);
+        msg!("MintNft: PDA bump: {:?}", bump);
+
+        if calculated_pda != ctx.accounts.nft_mint.key() {
+            msg!("Error: PDA mismatch for nft_mint");
+            return Err(anchor_lang::error::ErrorCode::ConstraintSeeds.into());
+        }
         if attentance_code != ctx.accounts.event_account.attentance_code {
             return Err(ErrorCode::InvalidAttentanceCode.into());
         }
@@ -510,8 +540,7 @@ pub struct MintNft<'info> {
         payer = attentee,
         seeds = [
             b"nft_mint".as_ref(),
-            event_account.key().as_ref(),
-            attentee.key().as_ref()
+            registration_account.key().as_ref()
         ],
         bump,
         mint::decimals = 0,

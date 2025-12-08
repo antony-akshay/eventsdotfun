@@ -1,16 +1,20 @@
 "use client";
 
 import { getEventProgram, getEventProgramId } from '@project/anchor'
-import { Cluster, PublicKey, ComputeBudgetProgram} from '@solana/web3.js'
+import { Cluster, PublicKey, ComputeBudgetProgram, TransactionInstruction, Transaction, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
 import { TOKEN_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { useCluster } from '@/components/cluster/cluster-data-access'
+// import { useAnchorProvider } from '@/components/solana/use-anchor-provider'
 import { useTransactionToast } from '@/components/use-transaction-toast'
 import { toast } from 'sonner'
 import * as anchor from "@coral-xyz/anchor"
 import { useAnchorProvider } from '../solana/solana-provider'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import idl from '../../../anchor/target/idl/counter.json';
+import { ASSOCIATED_TOKEN_PROGRAM_ID as SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID} from '@solana/spl-token';
+import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 
 
@@ -41,6 +45,7 @@ interface CloseRegistrationArgs {
 }
 
 interface MintNftArgs {
+  // attentee:PublicKey;
   event: PublicKey;
   registration: PublicKey;
   attentance_code: Uint8Array;
@@ -83,44 +88,44 @@ export function useCounterProgram() {
   // })
 
   const getUsersRegistraionAccount = (eventAccount: PublicKey) => {
-  return useQuery({
-    enabled: !!publicKey && !!eventAccount && !!program,
-    queryKey: [
-      "get-only-registration-account",
-      { cluster, publicKey: publicKey?.toBase58(), event: eventAccount.toBase58() },
-    ],
-    queryFn: async () => {
-      if (!publicKey) return toast("wallet not connected");
+    return useQuery({
+      enabled: !!publicKey && !!eventAccount && !!program,
+      queryKey: [
+        "get-only-registration-account",
+        { cluster, publicKey: publicKey?.toBase58(), event: eventAccount.toBase58() },
+      ],
+      queryFn: async () => {
+        if (!publicKey) return toast("wallet not connected");
 
-      const [registrationAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
-        [
-          Buffer.from("attentee"),
-          eventAccount.toBuffer(),
-          publicKey.toBuffer(),
-        ],
-        programId
-      );
+        const [registrationAccountPda] = anchor.web3.PublicKey.findProgramAddressSync(
+          [
+            Buffer.from("attentee"),
+            eventAccount.toBuffer(),
+            publicKey.toBuffer(),
+          ],
+          programId
+        );
 
-      const registration = await program.account.eventRegistration.fetchNullable(
-        registrationAccountPda
-      );
+        const registration = await program.account.eventRegistration.fetchNullable(
+          registrationAccountPda
+        );
 
-      // ✅ Only return real registration data or `null`
-      if (registration) {
-        return registration;
-      } else {
-        return null;
-      }
-    },
-  });
-};
+        // ✅ Only return real registration data or `null`
+        if (registration) {
+          return registration;
+        } else {
+          return null;
+        }
+      },
+    });
+  };
 
 
 
 
   const createEventAccount = useMutation<string, Error, InitializeEventArgs>({
     mutationKey: ['event', 'initialize', { cluster }],
-    mutationFn: ({ event, name, description, url, attendanceCodeHash, startTime, endTime, totalAttentees, collection_mint }) =>
+    mutationFn: ({ event, name, description, url, attendanceCodeHash, startTime, endTime, totalAttentees, collection_mint}) =>
       program.methods.initializeEvent(
         name,
         description,
@@ -195,15 +200,37 @@ export function useCounterProgram() {
 
   const mintNft = useMutation<string, Error, MintNftArgs>({
     mutationKey: ['RegistrationAccount', 'initialize', { cluster }],
-    mutationFn: async ({ event, registration, attentance_code }) => {
+    mutationFn: async ({ event, registration, attentance_code, collection_mint, nftMintPda, metadata, master_edition, child_nft_master_edition, child_nft_metadata, destination,attentee }) => {
       try {
         // Build the transaction instead of sending it immediately
+
+        console.log("inside counter-data-access nftmintpda:", nftMintPda);
+
+        console.log("programid:", program.programId.toBase58());
+        console.log("pid:", programId.toBase58());
+        const programId2 = new PublicKey(idl.address);
+        console.log("programId--2", programId2.toBase58());
+
+        const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+          "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        );
+
         const tx = await program.methods
           .mintNft(Array.from(attentance_code))
           .accounts({
+            // attentee:attentee,
             eventAccount: event,
             registrationAccount: registration,
+            collection_mint: collection_mint,
+            nft_mint: nftMintPda,
+            child_nft_metadata: child_nft_metadata,
+            child_nft_master_edition: child_nft_master_edition,
+            metadata: metadata,
+            master_edition: master_edition,
+            destination: destination,
             tokenProgram: TOKEN_PROGRAM_ID,
+            associatedTokenProgram: SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
+            tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
           })
           .transaction();
 
@@ -250,6 +277,7 @@ export function useCounterProgram() {
       toast.error(`Failed: ${err.message}`);
     },
   });
+
 
 
 

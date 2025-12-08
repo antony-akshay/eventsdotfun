@@ -1,20 +1,14 @@
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Note that this is only a type helper and is not the actual IDL. The original
- * IDL can be found at `target/idl/counter.json`.
- */
-export type Counter = {
+{
   "address": "QgHcKbZbXDBLJc9yFXx7gmbobZK9QbDsaWkdXY2rQcV",
   "metadata": {
-    "name": "counter",
+    "name": "basic",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Created with Anchor"
   },
   "instructions": [
     {
-      "name": "cancelRegistration",
+      "name": "cancel_registration",
       "discriminator": [
         238,
         114,
@@ -32,7 +26,7 @@ export type Counter = {
           "signer": true
         },
         {
-          "name": "eventAccount",
+          "name": "event_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -49,18 +43,18 @@ export type Counter = {
               {
                 "kind": "account",
                 "path": "event_account.creator",
-                "account": "event"
+                "account": "Event"
               },
               {
                 "kind": "account",
                 "path": "event_account.name",
-                "account": "event"
+                "account": "Event"
               }
             ]
           }
         },
         {
-          "name": "registrationAccount",
+          "name": "registration_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -79,7 +73,7 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "eventAccount"
+                "path": "event_account"
               },
               {
                 "kind": "account",
@@ -89,14 +83,14 @@ export type Counter = {
           }
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "closeEvent",
+      "name": "close_event",
       "discriminator": [
         117,
         114,
@@ -114,7 +108,7 @@ export type Counter = {
           "signer": true
         },
         {
-          "name": "eventAccount",
+          "name": "event_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -131,25 +125,25 @@ export type Counter = {
               {
                 "kind": "account",
                 "path": "event_account.creator",
-                "account": "event"
+                "account": "Event"
               },
               {
                 "kind": "account",
                 "path": "event_account.name",
-                "account": "event"
+                "account": "Event"
               }
             ]
           }
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
-      "name": "editEvent",
+      "name": "edit_event",
       "discriminator": [
         175,
         88,
@@ -166,11 +160,11 @@ export type Counter = {
           "writable": true,
           "signer": true,
           "relations": [
-            "eventAccount"
+            "event_account"
           ]
         },
         {
-          "name": "eventAccount",
+          "name": "event_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -196,17 +190,17 @@ export type Counter = {
           }
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "name",
+          "name": "_name",
           "type": "string"
         },
         {
-          "name": "attentanceCode",
+          "name": "attentance_code",
           "type": {
             "array": [
               "u8",
@@ -215,21 +209,21 @@ export type Counter = {
           }
         },
         {
-          "name": "startTime",
+          "name": "start_time",
           "type": "i64"
         },
         {
-          "name": "endTime",
+          "name": "end_time",
           "type": "i64"
         },
         {
-          "name": "totalAttentees",
+          "name": "total_attentees",
           "type": "u32"
         }
       ]
     },
     {
-      "name": "initializeEvent",
+      "name": "initialize_event",
       "discriminator": [
         126,
         249,
@@ -247,7 +241,7 @@ export type Counter = {
           "signer": true
         },
         {
-          "name": "eventAccount",
+          "name": "event_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -273,7 +267,7 @@ export type Counter = {
           }
         },
         {
-          "name": "collectionMint",
+          "name": "collection_mint",
           "writable": true,
           "pda": {
             "seeds": [
@@ -305,7 +299,7 @@ export type Counter = {
           }
         },
         {
-          "name": "collectionTokenAccount",
+          "name": "collection_token_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -368,21 +362,21 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "tokenMetadataProgram"
+                "path": "token_metadata_program"
               },
               {
                 "kind": "account",
-                "path": "collectionMint"
+                "path": "collection_mint"
               }
             ],
             "program": {
               "kind": "account",
-              "path": "tokenMetadataProgram"
+              "path": "token_metadata_program"
             }
           }
         },
         {
-          "name": "masterEdition",
+          "name": "master_edition",
           "writable": true,
           "pda": {
             "seeds": [
@@ -401,11 +395,11 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "tokenMetadataProgram"
+                "path": "token_metadata_program"
               },
               {
                 "kind": "account",
-                "path": "collectionMint"
+                "path": "collection_mint"
               },
               {
                 "kind": "const",
@@ -422,23 +416,23 @@ export type Counter = {
             ],
             "program": {
               "kind": "account",
-              "path": "tokenMetadataProgram"
+              "path": "token_metadata_program"
             }
           }
         },
         {
-          "name": "tokenProgram"
+          "name": "token_program"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "tokenMetadataProgram",
+          "name": "token_metadata_program",
           "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         },
         {
@@ -460,7 +454,7 @@ export type Counter = {
           "type": "string"
         },
         {
-          "name": "attentanceCode",
+          "name": "attentance_code",
           "type": {
             "array": [
               "u8",
@@ -469,25 +463,25 @@ export type Counter = {
           }
         },
         {
-          "name": "startTime",
+          "name": "start_time",
           "type": "i64"
         },
         {
-          "name": "endTime",
+          "name": "end_time",
           "type": "i64"
         },
         {
-          "name": "totalAttentees",
+          "name": "total_attentees",
           "type": "u32"
         },
         {
-          "name": "collectionMint",
+          "name": "collection_mint",
           "type": "pubkey"
         }
       ]
     },
     {
-      "name": "mintNft",
+      "name": "mint_nft",
       "discriminator": [
         211,
         57,
@@ -504,11 +498,11 @@ export type Counter = {
           "writable": true,
           "signer": true,
           "relations": [
-            "registrationAccount"
+            "registration_account"
           ]
         },
         {
-          "name": "eventAccount",
+          "name": "event_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -525,18 +519,18 @@ export type Counter = {
               {
                 "kind": "account",
                 "path": "event_account.creator",
-                "account": "event"
+                "account": "Event"
               },
               {
                 "kind": "account",
                 "path": "event_account.name",
-                "account": "event"
+                "account": "Event"
               }
             ]
           }
         },
         {
-          "name": "registrationAccount",
+          "name": "registration_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -555,7 +549,7 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "eventAccount"
+                "path": "event_account"
               },
               {
                 "kind": "account",
@@ -565,7 +559,7 @@ export type Counter = {
           }
         },
         {
-          "name": "collectionMint",
+          "name": "collection_mint",
           "writable": true,
           "pda": {
             "seeds": [
@@ -592,13 +586,13 @@ export type Counter = {
               {
                 "kind": "account",
                 "path": "event_account.name",
-                "account": "event"
+                "account": "Event"
               }
             ]
           }
         },
         {
-          "name": "nftMint",
+          "name": "nft_mint",
           "writable": true,
           "pda": {
             "seeds": [
@@ -617,13 +611,13 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "registrationAccount"
+                "path": "registration_account"
               }
             ]
           }
         },
         {
-          "name": "childNftMetadata",
+          "name": "child_nft_metadata",
           "writable": true,
           "pda": {
             "seeds": [
@@ -642,21 +636,21 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "tokenMetadataProgram"
+                "path": "token_metadata_program"
               },
               {
                 "kind": "account",
-                "path": "nftMint"
+                "path": "nft_mint"
               }
             ],
             "program": {
               "kind": "account",
-              "path": "tokenMetadataProgram"
+              "path": "token_metadata_program"
             }
           }
         },
         {
-          "name": "childNftMasterEdition",
+          "name": "child_nft_master_edition",
           "writable": true,
           "pda": {
             "seeds": [
@@ -675,11 +669,11 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "tokenMetadataProgram"
+                "path": "token_metadata_program"
               },
               {
                 "kind": "account",
-                "path": "nftMint"
+                "path": "nft_mint"
               },
               {
                 "kind": "const",
@@ -696,7 +690,7 @@ export type Counter = {
             ],
             "program": {
               "kind": "account",
-              "path": "tokenMetadataProgram"
+              "path": "token_metadata_program"
             }
           }
         },
@@ -720,21 +714,21 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "tokenMetadataProgram"
+                "path": "token_metadata_program"
               },
               {
                 "kind": "account",
-                "path": "collectionMint"
+                "path": "collection_mint"
               }
             ],
             "program": {
               "kind": "account",
-              "path": "tokenMetadataProgram"
+              "path": "token_metadata_program"
             }
           }
         },
         {
-          "name": "masterEdition",
+          "name": "master_edition",
           "writable": true,
           "pda": {
             "seeds": [
@@ -753,11 +747,11 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "tokenMetadataProgram"
+                "path": "token_metadata_program"
               },
               {
                 "kind": "account",
-                "path": "collectionMint"
+                "path": "collection_mint"
               },
               {
                 "kind": "const",
@@ -774,7 +768,7 @@ export type Counter = {
             ],
             "program": {
               "kind": "account",
-              "path": "tokenMetadataProgram"
+              "path": "token_metadata_program"
             }
           }
         },
@@ -789,11 +783,11 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "tokenProgram"
+                "path": "token_program"
               },
               {
                 "kind": "account",
-                "path": "nftMint"
+                "path": "nft_mint"
               }
             ],
             "program": {
@@ -836,18 +830,18 @@ export type Counter = {
           }
         },
         {
-          "name": "tokenProgram"
+          "name": "token_program"
         },
         {
-          "name": "associatedTokenProgram",
+          "name": "associated_token_program",
           "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
-          "name": "tokenMetadataProgram",
+          "name": "token_metadata_program",
           "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         },
         {
@@ -857,7 +851,7 @@ export type Counter = {
       ],
       "args": [
         {
-          "name": "attentanceCode",
+          "name": "attentance_code",
           "type": {
             "array": [
               "u8",
@@ -868,7 +862,7 @@ export type Counter = {
       ]
     },
     {
-      "name": "registerEvent",
+      "name": "register_event",
       "discriminator": [
         206,
         4,
@@ -886,7 +880,7 @@ export type Counter = {
           "signer": true
         },
         {
-          "name": "eventAccount",
+          "name": "event_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -903,18 +897,18 @@ export type Counter = {
               {
                 "kind": "account",
                 "path": "event_account.creator",
-                "account": "event"
+                "account": "Event"
               },
               {
                 "kind": "account",
                 "path": "event_account.name",
-                "account": "event"
+                "account": "Event"
               }
             ]
           }
         },
         {
-          "name": "registrationAccount",
+          "name": "registration_account",
           "writable": true,
           "pda": {
             "seeds": [
@@ -933,7 +927,7 @@ export type Counter = {
               },
               {
                 "kind": "account",
-                "path": "eventAccount"
+                "path": "event_account"
               },
               {
                 "kind": "account",
@@ -943,7 +937,7 @@ export type Counter = {
           }
         },
         {
-          "name": "systemProgram",
+          "name": "system_program",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -952,7 +946,7 @@ export type Counter = {
   ],
   "accounts": [
     {
-      "name": "event",
+      "name": "Event",
       "discriminator": [
         125,
         192,
@@ -965,7 +959,7 @@ export type Counter = {
       ]
     },
     {
-      "name": "eventRegistration",
+      "name": "EventRegistration",
       "discriminator": [
         253,
         95,
@@ -981,43 +975,43 @@ export type Counter = {
   "errors": [
     {
       "code": 6000,
-      "name": "registrationNotOpenYet",
+      "name": "RegistrationNotOpenYet",
       "msg": "registration not open yet"
     },
     {
       "code": 6001,
-      "name": "registrationCompleted",
+      "name": "RegistrationCompleted",
       "msg": "registration completed"
     },
     {
       "code": 6002,
-      "name": "invalidAttentanceCode",
+      "name": "InvalidAttentanceCode",
       "msg": "invalid attentance code"
     },
     {
       "code": 6003,
-      "name": "notMinitingTime",
+      "name": "NotMinitingTime",
       "msg": "minting not reached"
     },
     {
       "code": 6004,
-      "name": "nftAlreadyMinted",
+      "name": "NftAlreadyMinted",
       "msg": "already minted"
     },
     {
       "code": 6005,
-      "name": "overflowError",
+      "name": "OverflowError",
       "msg": "overflow error"
     },
     {
       "code": 6006,
-      "name": "invalidEventTime",
+      "name": "InvalidEventTime",
       "msg": "invalid event start or end time"
     }
   ],
   "types": [
     {
-      "name": "event",
+      "name": "Event",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1038,7 +1032,7 @@ export type Counter = {
             "type": "string"
           },
           {
-            "name": "attentanceCode",
+            "name": "attentance_code",
             "type": {
               "array": [
                 "u8",
@@ -1047,30 +1041,30 @@ export type Counter = {
             }
           },
           {
-            "name": "startTime",
+            "name": "start_time",
             "type": "i64"
           },
           {
-            "name": "endTime",
+            "name": "end_time",
             "type": "i64"
           },
           {
-            "name": "totalAttentees",
+            "name": "total_attentees",
             "type": "u32"
           },
           {
-            "name": "registeredAttentees",
+            "name": "registered_attentees",
             "type": "u32"
           },
           {
-            "name": "collectionMint",
+            "name": "collection_mint",
             "type": "pubkey"
           }
         ]
       }
     },
     {
-      "name": "eventRegistration",
+      "name": "EventRegistration",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1091,7 +1085,7 @@ export type Counter = {
             "type": "bool"
           },
           {
-            "name": "attentenceNftMinted",
+            "name": "attentence_nft_minted",
             "type": "bool"
           }
         ]
@@ -1100,9 +1094,9 @@ export type Counter = {
   ],
   "constants": [
     {
-      "name": "symbol",
+      "name": "SYMBOL",
       "type": "string",
       "value": "\"TLT\""
     }
   ]
-};
+}

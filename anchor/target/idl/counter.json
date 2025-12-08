@@ -597,9 +597,21 @@
           "pda": {
             "seeds": [
               {
+                "kind": "const",
+                "value": [
+                  110,
+                  102,
+                  116,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
                 "kind": "account",
-                "path": "event_account.total_attentees",
-                "account": "Event"
+                "path": "registration_account"
               }
             ]
           }
@@ -980,6 +992,21 @@
       "code": 6003,
       "name": "NotMinitingTime",
       "msg": "minting not reached"
+    },
+    {
+      "code": 6004,
+      "name": "NftAlreadyMinted",
+      "msg": "already minted"
+    },
+    {
+      "code": 6005,
+      "name": "OverflowError",
+      "msg": "overflow error"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidEventTime",
+      "msg": "invalid event start or end time"
     }
   ],
   "types": [
