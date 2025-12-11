@@ -19,6 +19,7 @@ import {
 } from "@solana/spl-token";
 import { log } from 'console'
 import MintModal from './MintModal'
+import Image from 'next/image';
 
 
 export function CounterCreate() {
@@ -420,9 +421,11 @@ function CounterCard({ account }: { account: PublicKey }) {
             <p className="text-sm text-gray-500">
               {eventDescription}
             </p>
-            <p className='text-sm'>
-              time: {formatShortDate(Number(start_time))} - {formatShortDate(Number(end_time))}
-            </p>
+            <div className='flex'>
+              <img className='w-5 h-5' src="https://files.catbox.moe/qatofg.png" alt="clock" />
+              <p className='text-sm ml-3'> {formatShortDate(Number(start_time))} - {formatShortDate(Number(end_time))}
+              </p>
+            </div>
           </div>
 
           {/* BUTTONS */}
