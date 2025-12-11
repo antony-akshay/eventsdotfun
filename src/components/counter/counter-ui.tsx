@@ -346,6 +346,9 @@ function CounterCard({ account }: { account: PublicKey }) {
     [accountQuery.data?.name]
   );
 
+  const start_time = accountQuery.data?.startTime.toString() ?? "";
+  const end_time = accountQuery.data?.endTime.toString() ?? "";
+
   const eventDescription = accountQuery.data?.description ?? "";
   const eventMetadataUrl = accountQuery.data?.url ?? "";
 
@@ -372,7 +375,15 @@ function CounterCard({ account }: { account: PublicKey }) {
     fetchMetadata();
   }, [eventMetadataUrl]);
 
+  function formatShortDate(unix: number | string) {
+    const date = new Date(Number(unix) * 1000);
 
+    const day = date.getDate();
+    const month = date.toLocaleString("en-US", { month: "short" });
+    const year = date.getFullYear().toString().slice(-2);
+
+    return `${day} ${month} ${year}`;
+  }
 
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
@@ -409,13 +420,9 @@ function CounterCard({ account }: { account: PublicKey }) {
             <p className="text-sm text-gray-500">
               {eventDescription}
             </p>
-
-            <p className="text-sm text-gray-500">
-              {accountQuery.data?.creator
-                ? `${accountQuery.data.creator.toString().slice(0, 3)}...${accountQuery.data.creator.toString().slice(-4)}`
-                : ""}
+            <p className='text-sm'>
+              time: {formatShortDate(Number(start_time))} - {formatShortDate(Number(end_time))}
             </p>
-
           </div>
 
           {/* BUTTONS */}
@@ -699,7 +706,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
       await mintNft.mutateAsync({
         event: registrationAccountQuery.data?.event!,
         registration: account,
-        attentance_code: attendanceCodeHash, 
+        attentance_code: attendanceCodeHash,
         collection_mint: collectionMintPdanew,
         nftMintPda: nftMintPdanew,
         child_nft_metadata: childMetadataPdanew,
