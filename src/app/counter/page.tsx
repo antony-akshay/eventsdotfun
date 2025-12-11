@@ -1,4 +1,4 @@
-import Portfolio from '@/components/ui/Portfolio'
+import Portfolio from '@/components/ui/Home'
 
 export default function Page() {
   return <Portfolio />

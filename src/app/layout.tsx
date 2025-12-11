@@ -1,11 +1,8 @@
-import type { Metadata } from 'next'
-import './globals.css'
 import { AppProviders } from '@/components/app-providers'
-import { AppLayout } from '@/components/app-layout'
+import Home from '@/components/ui/Home'
+import type { Metadata } from 'next'
 import React from 'react'
-import Portfolio from '@/components/ui/Portfolio'
-import { Alert } from '@/components/ui/alert'
-import { Toaster } from 'sonner'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Eventsdotfun',
@@ -14,7 +11,7 @@ export const metadata: Metadata = {
 
 const links: { label: string; path: string }[] = [
   // More links...
-  { label: 'Home', path: '/' },
+  { label: 'Home', path: '/reboot' },
   { label: 'Account', path: '/account' },
   { label: 'Counter Program', path: '/counter' },
   { label: 'reboot', path: '/reboot' }
@@ -25,8 +22,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
         <AppProviders>
-          <AppLayout links={links}>{children}</AppLayout>
-          {/* <Portfolio/> */}
+          {/* <AppLayout links={links}>{children}</AppLayout> */}
+          <Home/>
         </AppProviders>
       </body>
     </html>

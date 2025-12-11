@@ -26,7 +26,7 @@ export function AppLayout({
           {children}
         </main>
       </div>
-      <Toaster />
+      <Toaster/>
     </ThemeProvider>
   )
 }

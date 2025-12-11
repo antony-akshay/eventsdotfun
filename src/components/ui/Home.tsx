@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import CreateEvent from './CreateEvent';
 import { WalletButton } from '../solana/solana-provider';
 import { CounterList } from '../counter/counter-ui';
+import { Toaster } from "sonner";
 
 type ViewType = 'projects' | 'profile' | 'createnewevent' | 'events';
 
-const Portfolio: React.FC = () => {
+const Home: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>('projects');
 
   const renderContent = () => {
@@ -103,8 +104,9 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
       </div>
+      <Toaster/>
     </div>
   );
 };
 
-export default Portfolio;
+export default Home;
