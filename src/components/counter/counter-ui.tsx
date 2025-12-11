@@ -448,7 +448,9 @@ function CounterCard({ account }: { account: PublicKey }) {
             </button>
 
             {/* Close */}
-            <button
+            {
+              accountQuery.data?.creator.toBase58() === publicKey?.toBase58() ?
+              <button
               onClick={handleCloseEvent}
               disabled={createRegistrationAccount.isPending}
               className={`
@@ -462,7 +464,9 @@ function CounterCard({ account }: { account: PublicKey }) {
               `}
             >
               Close
-            </button>
+            </button>: null
+            }
+            
           </div>
 
         </div>
