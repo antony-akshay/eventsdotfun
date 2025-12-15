@@ -2,55 +2,81 @@
 
 import React, { useState } from "react";
 
-interface UploadProps{
-    event_name:string;
-    description:string;
-    onUploadComplete:(url:string)=>void;
+interface UploadProps {
+  event_name: string;
+  description: string;
+  onUploadComplete: (url: string) => void;
 }
 
+type UploadStatus = "idle" | "uploading" | "success" | "error";
 
+export default function UploadComponent({
+  event_name,
+  description,
+  onUploadComplete,
+}: UploadProps) {
+  const [status, setStatus] = useState<UploadStatus>("idle");
 
-export default function UploadComponent({event_name,description,onUploadComplete}:UploadProps) {
-    const [success, setSuccess] = useState(true);
-    const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-        const form = new FormData();
-        form.append("file", file);
-        form.append("event_name",event_name);
-        form.append("description",description);
+    setStatus("uploading");
 
-        const res = await fetch("/api/upload", {
-            method: "POST",
-            body: form,
-        });
+    const form = new FormData();
+    form.append("file", file);
+    form.append("event_name", event_name);
+    form.append("description", description);
 
-        const data: { url?: string; error?: string } = await res.json();
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: form,
+      });
 
-        if (data.error) {
-            setSuccess(false);
-            console.error("Upload error:", data.error);
-        } else {
-            console.log("Catbox URL:", data.url);
-            if(data.url){
-                console.log("Catbox URL:", data.url);
-                onUploadComplete(data.url);
-            }
-        }
-    };
+      const data: { url?: string; error?: string } = await res.json();
 
-    return <div className="">
-  <label
-    className="bg-gray-300 border-2 border-black rounded h-12 flex items-center justify-center text-sm font-medium cursor-pointer hover:bg-gray-400 transition-colors w-full"
-  >
-    {success ? <span>Upload the image</span>:<span>Upload failed</span>}
-    <input
-      type="file"
-      className="hidden"
-      onChange={handleUpload}
-    />
-  </label>
-</div>
+      if (data.error || !data.url) {
+        setStatus("error");
+        return;
+      }
 
+      onUploadComplete(data.url);
+      setStatus("success");
+    } catch (err) {
+      console.error(err);
+      setStatus("error");
+    }
+  };
+
+  return (
+    <div>
+      <label
+        className={`border-2 border-black rounded h-12 flex items-center justify-center
+          text-sm font-medium cursor-pointer transition-colors w-full
+          ${
+            status === "success"
+              ? "bg-purple-300 cursor-default"
+              : status === "error"
+              ? "bg-red-300 hover:bg-red-400"
+              : status === "uploading"
+              ? "bg-yellow-300 cursor-wait"
+              : "bg-gray-300 hover:bg-gray-400"
+          }`}
+      >
+        {status === "idle" && "Upload the image"}
+        {status === "uploading" && "Uploading..."}
+        {status === "success" && "✅ Upload successful"}
+        {status === "error" && "❌ Upload failed"}
+
+        {status !== "success" && (
+          <input
+            type="file"
+            className="hidden"
+            onChange={handleUpload}
+          />
+        )}
+      </label>
+    </div>
+  );
 }
