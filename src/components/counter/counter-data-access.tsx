@@ -13,7 +13,7 @@ import * as anchor from "@coral-xyz/anchor"
 import { useAnchorProvider } from '../solana/solana-provider'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import idl from '../../../anchor/target/idl/counter.json';
-import { ASSOCIATED_TOKEN_PROGRAM_ID as SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID} from '@solana/spl-token';
+import { ASSOCIATED_TOKEN_PROGRAM_ID as SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from '@solana/spl-token';
 import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 
@@ -125,7 +125,7 @@ export function useCounterProgram() {
 
   const createEventAccount = useMutation<string, Error, InitializeEventArgs>({
     mutationKey: ['event', 'initialize', { cluster }],
-    mutationFn: ({ event, name, description, url, attendanceCodeHash, startTime, endTime, totalAttentees, collection_mint}) =>
+    mutationFn: ({ event, name, description, url, attendanceCodeHash, startTime, endTime, totalAttentees, collection_mint }) =>
       program.methods.initializeEvent(
         name,
         description,
@@ -200,7 +200,7 @@ export function useCounterProgram() {
 
   const mintNft = useMutation<string, Error, MintNftArgs>({
     mutationKey: ['RegistrationAccount', 'initialize', { cluster }],
-    mutationFn: async ({ event, registration, attentance_code, collection_mint, nftMintPda, metadata, master_edition, child_nft_master_edition, child_nft_metadata, destination,attentee }) => {
+    mutationFn: async ({ event, registration, attentance_code, collection_mint, nftMintPda, metadata, master_edition, child_nft_master_edition, child_nft_metadata, destination, attentee }) => {
       try {
         // Build the transaction instead of sending it immediately
 
@@ -271,6 +271,7 @@ export function useCounterProgram() {
     },
     onSuccess: async (signature) => {
       transactionToast(signature);
+      await accounts.refetch();
     },
     onError: (err: any) => {
       console.error("Decoded error:", err);
