@@ -132,7 +132,7 @@
 } */
 
 .wallet-adapter-button-trigger {
-  height: 10px;
+  height: 20px;
   border: none;
   background-color: transparent !important;
   color: black !important;
@@ -144,8 +144,8 @@
 }
 
 .wallet-adapter-button-trigger:hover {
-  background-color: black !important;
-  color: white !important;
+  /* background-color: black !important; */
+  /* color: white !important; */
 }
 
 .sonner,

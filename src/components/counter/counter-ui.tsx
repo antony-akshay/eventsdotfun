@@ -1,25 +1,18 @@
 "use client";
 
-import { Keypair, PublicKey } from '@solana/web3.js'
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { ExplorerLink } from '@/components/cluster/cluster-ui'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ellipsify } from '@/lib/utils'
-import { useCounterProgram, useCounterProgramAccount } from './counter-data-access'
-import * as anchor from "@coral-xyz/anchor"
-import { sha256 } from "@noble/hashes/sha256"
-import { useWallet } from '@solana/wallet-adapter-react'
+import { Button } from '@/components/ui/button';
+import * as anchor from "@coral-xyz/anchor";
+import { sha256 } from "@noble/hashes/sha256";
+import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { useCounterProgram, useCounterProgramAccount } from './counter-data-access';
 
 import {
-  getAssociatedTokenAddressSync,
-  createAssociatedTokenAccountInstruction,
   ASSOCIATED_TOKEN_PROGRAM_ID as SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
-import { log } from 'console'
-import MintModal from './MintModal'
-import Image from 'next/image';
+import MintModal from './MintModal';
 
 
 export function CounterCreate() {
@@ -450,23 +443,23 @@ function CounterCard({ account }: { account: PublicKey }) {
             {/* Close */}
             {
               accountQuery.data?.creator.toBase58() === publicKey?.toBase58() ?
-              <button
-              onClick={handleCloseEvent}
-              disabled={createRegistrationAccount.isPending}
-              className={`
+                <button
+                  onClick={handleCloseEvent}
+                  disabled={createRegistrationAccount.isPending}
+                  className={`
                 px-6 py-2 bg-white border-2 border-black rounded font-bold
                 transition-all shadow-[4px_4px_0_#000]
                 active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
                 ${createRegistrationAccount.isPending
-                  ? "cursor-not-allowed bg-gray-200 text-gray-500 border-gray-400 shadow-none"
-                  : "text-red-600 hover:bg-red-500 hover:text-white"
-                }
+                      ? "cursor-not-allowed bg-gray-200 text-gray-500 border-gray-400 shadow-none"
+                      : "text-red-600 hover:bg-red-500 hover:text-white"
+                    }
               `}
-            >
-              Close
-            </button>: null
+                >
+                  Close
+                </button> : null
             }
-            
+
           </div>
 
         </div>
@@ -918,12 +911,19 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 }
 
 function AccountItem({ account }: { account: PublicKey }) {
+  const [Expiry,setExpiry] = useState(false);
   const { publicKey } = useWallet();
-  const { registrationAccounts } = useCounterProgram();
-
+  const { registrationAccounts, programId } = useCounterProgram();
+  const { accountQuery } = useCounterProgramAccount({ account });
+  if (!accountQuery.data) return null;
   if (!publicKey) return null;
 
+
   const regList = registrationAccounts.data ?? [];
+
+  const now = Math.floor(Date.now() / 1000);
+  if (accountQuery.data?.endTime.toNumber() < now) return null;
+
 
   // Find the registration for this user + event
   const registration = regList.find((reg) =>
