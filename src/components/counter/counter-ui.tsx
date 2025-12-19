@@ -911,7 +911,6 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 }
 
 function AccountItem({ account }: { account: PublicKey }) {
-  const [Expiry,setExpiry] = useState(false);
   const { publicKey } = useWallet();
   const { registrationAccounts, programId } = useCounterProgram();
   const { accountQuery } = useCounterProgramAccount({ account });

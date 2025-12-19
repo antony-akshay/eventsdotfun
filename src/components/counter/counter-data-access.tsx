@@ -1,20 +1,18 @@
 "use client";
 
-import { getEventProgram, getEventProgramId } from '@project/anchor'
-import { Cluster, PublicKey, ComputeBudgetProgram, TransactionInstruction, Transaction, SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
-import { TOKEN_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
-import { useCluster } from '@/components/cluster/cluster-data-access'
-// import { useAnchorProvider } from '@/components/solana/use-anchor-provider'
-import { useTransactionToast } from '@/components/use-transaction-toast'
-import { toast } from 'sonner'
-import * as anchor from "@coral-xyz/anchor"
-import { useAnchorProvider } from '../solana/solana-provider'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import idl from '../../../anchor/target/idl/counter.json';
+import { useCluster } from '@/components/cluster/cluster-data-access';
+import { useTransactionToast } from '@/components/use-transaction-toast';
+import * as anchor from "@coral-xyz/anchor";
+import { TOKEN_PROGRAM_ID } from '@coral-xyz/anchor/dist/cjs/utils/token';
+import { getEventProgram, getEventProgramId } from '@project/anchor';
 import { ASSOCIATED_TOKEN_PROGRAM_ID as SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID } from '@solana/spl-token';
-import { MPL_TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { Cluster, ComputeBudgetProgram, PublicKey } from '@solana/web3.js';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { toast } from 'sonner';
+import idl from '../../../anchor/target/idl/counter.json';
+import { useAnchorProvider } from '../solana/solana-provider';
 
 
 
@@ -126,7 +124,7 @@ export function useCounterProgram() {
   const createEventAccount = useMutation<string, Error, InitializeEventArgs>({
     mutationKey: ['event', 'initialize', { cluster }],
     mutationFn: ({ event, name, description, url, attendanceCodeHash, startTime, endTime, totalAttentees, collection_mint }) =>
-      program.methods.initializeEvent(
+      (program.methods.initializeEvent(
         name,
         description,
         url,
@@ -135,7 +133,7 @@ export function useCounterProgram() {
         endTime,
         totalAttentees,
         collection_mint
-      )
+      ) as any)
         .accounts({ eventAccount: event, tokenProgram: TOKEN_PROGRAM_ID }).rpc(),
     onSuccess: async (signature) => {
       transactionToast(signature)
@@ -149,7 +147,7 @@ export function useCounterProgram() {
   const closeEventAccount = useMutation<string, Error, CloseEventArgs>({
     mutationKey: ['event', 'initialize', { cluster }],
     mutationFn: ({ event }) =>
-      program.methods.closeEvent()
+      (program.methods.closeEvent() as any)
         .accounts({ eventAccount: event }).rpc(),
     onSuccess: async (signature) => {
       transactionToast(signature)
@@ -164,8 +162,8 @@ export function useCounterProgram() {
     mutationKey: ['RegistrationAccount', 'initialize', { cluster }],
     mutationFn: async ({ event, registration }) => {
       try {
-        return await program.methods
-          .cancelRegistration()
+        return await (program.methods
+          .cancelRegistration() as any)
           .accounts({
             eventAccount: event,
             registrationAccount: registration,
@@ -200,10 +198,8 @@ export function useCounterProgram() {
 
   const mintNft = useMutation<string, Error, MintNftArgs>({
     mutationKey: ['RegistrationAccount', 'initialize', { cluster }],
-    mutationFn: async ({ event, registration, attentance_code, collection_mint, nftMintPda, metadata, master_edition, child_nft_master_edition, child_nft_metadata, destination, attentee }) => {
+    mutationFn: async ({ event, registration, attentance_code, collection_mint, nftMintPda, metadata, master_edition, child_nft_master_edition, child_nft_metadata, destination, }) => {
       try {
-        // Build the transaction instead of sending it immediately
-
         console.log("inside counter-data-access nftmintpda:", nftMintPda);
 
         console.log("programid:", program.programId.toBase58());
@@ -215,8 +211,8 @@ export function useCounterProgram() {
           "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
         );
 
-        const tx = await program.methods
-          .mintNft(Array.from(attentance_code))
+        const tx = await (program.methods
+          .mintNft(Array.from(attentance_code)) as any)
           .accounts({
             // attentee:attentee,
             eventAccount: event,
@@ -245,9 +241,8 @@ export function useCounterProgram() {
 
         tx.instructions.unshift(modifyComputeUnits, addPriorityFee);
 
-        // ✅ Step 3 — Send the transaction manually
         const { connection } = program.provider;
-        const { publicKey, signTransaction } = program.provider.wallet;
+        const { publicKey, signTransaction } = (program.provider as anchor.AnchorProvider).wallet;
 
         if (!publicKey) throw new Error("Wallet not connected");
 
@@ -259,7 +254,7 @@ export function useCounterProgram() {
           skipPreflight: false,
         });
 
-        // Wait for confirmation
+        // Wait for confirmation 
         await connection.confirmTransaction(sig, "confirmed");
 
         return sig;
@@ -318,8 +313,8 @@ export function useCounterProgramAccount({ account }: { account: PublicKey }) {
     mutationKey: ['RegistrationAccount', 'initialize', { cluster }],
     mutationFn: async ({ event, registration }) => {
       try {
-        return await program.methods
-          .registerEvent()
+        return await (program.methods
+          .registerEvent() as any)
           .accounts({
             eventAccount: event,
             registrationAccount: registration,
@@ -356,8 +351,8 @@ export function useCounterProgramAccount({ account }: { account: PublicKey }) {
     mutationKey: ['RegistrationAccount', 'initialize', { cluster }],
     mutationFn: async ({ event, registration }) => {
       try {
-        return await program.methods
-          .cancelRegistration()
+        return await (program.methods
+          .cancelRegistration() as any)
           .accounts({
             eventAccount: event,
             registrationAccount: registration,
