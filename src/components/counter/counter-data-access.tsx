@@ -242,9 +242,13 @@ export function useCounterProgram() {
         tx.instructions.unshift(modifyComputeUnits, addPriorityFee);
 
         const { connection } = program.provider;
-        const { publicKey, signTransaction } = (program.provider as anchor.AnchorProvider).wallet;
+        const wallet = program.provider.wallet;
 
-        if (!publicKey) throw new Error("Wallet not connected");
+        if (!wallet || !wallet.publicKey || !wallet.signTransaction) {
+          throw new Error("Wallet not connected");
+        }
+
+        const { publicKey, signTransaction } = wallet;
 
         tx.feePayer = publicKey;
         tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;

@@ -121,7 +121,7 @@ export function CounterCreate() {
         <div className="relative">
           {/* Background shape */}
           <div
-            className="absolute inset-0 bg-gradient-to-br from-blue-300 to-blue-400 opacity-90"
+            className="absolute inset-0 bg-linear-to-br from-blue-300 to-blue-400 opacity-90"
             style={{
               borderRadius: "60px 40px 55px 45px",
               transform: "rotate(-0.5deg)",
@@ -130,7 +130,7 @@ export function CounterCreate() {
 
           {/* Form */}
           <div
-            className="relative bg-gradient-to-r from-black-900 to-black-800 bg-opacity-90 p-8 shadow-2xl"
+            className="relative bg-linear-to-r from-black-900 to-black-800 bg-opacity-90 p-8 shadow-2xl"
             style={{
               borderRadius: "55px 35px 50px 40px",
               minWidth: "800px",
@@ -391,7 +391,7 @@ function CounterCard({ account }: { account: PublicKey }) {
 
         {/* LEFT SIDE - IMAGE */}
         <div className="w-2/5 flex items-center justify-center p-6">
-          <div className="w-[180px] h-[160px] bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg overflow-hidden flex items-center justify-center">
+          <div className="w-[180px] h-[160px] bg-linear-to-br from-gray-700 to-gray-900 rounded-lg overflow-hidden flex items-center justify-center">
             {imageUrl && (
               <img
                 src={imageUrl}
@@ -428,7 +428,7 @@ function CounterCard({ account }: { account: PublicKey }) {
               onClick={handleRegistration}
               disabled={createRegistrationAccount.isPending}
               className={`
-      px-6 py-2 rounded font-bold border-2 border-black rounded
+      px-6 py-2 font-bold border-2 border-black rounded
       transition-all shadow-[4px_4px_0_#000]
       active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
       ${!createRegistrationAccount.isPending
@@ -796,7 +796,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
             {Array.from({ length: 15 }).map((_, i) => (
               <div
                 key={`top-${i}`}
-                className="w-4 h-4 bg-[#f9f6ef] rounded-full flex-shrink-0"
+                className="w-4 h-4 bg-[#f9f6ef] rounded-full shrink-0"
                 style={{ marginLeft: i === 0 ? 0 : '16px' }}
               />
             ))}
@@ -807,7 +807,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
             {Array.from({ length: 15 }).map((_, i) => (
               <div
                 key={`bottom-${i}`}
-                className="w-4 h-4 bg-[#f9f6ef] rounded-full flex-shrink-0"
+                className="w-4 h-4 bg-[#f9f6ef] rounded-full shrink-0"
                 style={{ marginLeft: i === 0 ? 0 : '16px' }}
               />
             ))}
@@ -824,7 +824,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
           <div className="flex h-full relative z-5">
             {/* Left Side – Icon */}
             <div className="w-2/5 flex items-center justify-center p-6">
-              <div className="w-[180px] h-[160px] bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="w-[180px] h-[160px] bg-linear-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
                 {imageUrl && (
                   <img
                     src={imageUrl}
@@ -876,7 +876,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
                   onClick={() => setShowMintModal(true)}
                   disabled={mintNft.isPending}
                   className={`
-      px-6 py-2 rounded font-bold border-2 border-black rounded
+      px-6 py-2 font-bold border-2 border-black rounded
       transition-all shadow-[4px_4px_0_#000]
       active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
       ${!mintNft.isPending
