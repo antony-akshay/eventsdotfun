@@ -83,7 +83,7 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ error: "Upload failed" }), {
+    return new Response(JSON.stringify({ error: `Upload failed: ${err}` }), {
       status: 500,
     });
   }

@@ -3,15 +3,15 @@
 import { Button } from '@/components/ui/button';
 import * as anchor from "@coral-xyz/anchor";
 import { sha256 } from "@noble/hashes/sha256";
-import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
-import { useCounterProgram, useCounterProgramAccount } from './counter-data-access';
-
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID as SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID,
   TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
+import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
+import Image from 'next/image';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { useCounterProgram, useCounterProgramAccount } from './counter-data-access';
 import MintModal from './MintModal';
 
 
@@ -267,7 +267,7 @@ export function CounterCreate() {
 }
 
 export function CounterList() {
-  const { accounts, getProgramAccount, getUsersRegistraionAccount } = useCounterProgram();
+  const { accounts, getProgramAccount, useUsersRegistrationAccount } = useCounterProgram();
 
 
   if (getProgramAccount.isLoading) {
@@ -391,16 +391,19 @@ function CounterCard({ account }: { account: PublicKey }) {
 
         {/* LEFT SIDE - IMAGE */}
         <div className="w-2/5 flex items-center justify-center p-6">
-          <div className="w-[180px] h-[160px] bg-linear-to-br from-gray-700 to-gray-900 rounded-lg overflow-hidden flex items-center justify-center">
+          <div className="relative w-[180px] h-[160px] bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg overflow-hidden">
             {imageUrl && (
-              <img
+              <Image
                 src={imageUrl}
                 alt="Event"
-                className="w-full h-full object-cover rounded-xl border"
+                fill
+                className="object-cover"
+                unoptimized
               />
             )}
           </div>
         </div>
+
 
         {/* RIGHT SIDE CONTENT */}
         <div className="w-3/5 p-6 flex flex-col justify-between">
@@ -415,7 +418,7 @@ function CounterCard({ account }: { account: PublicKey }) {
               {eventDescription}
             </p>
             <div className='flex'>
-              <img className='w-5 h-5' src="https://files.catbox.moe/qatofg.png" alt="clock" />
+              <Image width={5} height={5} unoptimized src="https://files.catbox.moe/qatofg.png" alt="clock" />
               <p className='text-sm ml-3'> {formatShortDate(Number(start_time))} - {formatShortDate(Number(end_time))}
               </p>
             </div>
@@ -826,7 +829,9 @@ function RegistrationCard({ account }: { account: PublicKey }) {
             <div className="w-2/5 flex items-center justify-center p-6">
               <div className="w-[180px] h-[160px] bg-linear-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
                 {imageUrl && (
-                  <img
+                  <Image
+                    width={180}
+                    height={160}
                     src={imageUrl}
                     alt="Event NFT"
                     className="w-full h-full object-cover rounded-xl border"

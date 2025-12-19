@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface MintModalProps {
   isOpen: boolean;
@@ -56,7 +56,7 @@ export default function MintModal({ isOpen, onClose, onMint }: MintModalProps) {
 
       {/* MODAL */}
       <div className="relative bg-white border-2 border-black rounded-lg w-[90%] max-w-md p-6 z-10 shadow-[6px_6px_0_#000] font-['IBM_Plex_Mono',monospace]">
-        
+
         {/* Close button */}
         <button
           onClick={onClose}
@@ -75,7 +75,7 @@ export default function MintModal({ isOpen, onClose, onMint }: MintModalProps) {
           {otpValues.map((value, index) => (
             <input
               key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
+              ref={(el) => { inputRefs.current[index] = el }}
               type="text"
               value={value}
               onChange={(e) => handleOtpChange(index, e.target.value)}
@@ -120,7 +120,7 @@ export default function MintModal({ isOpen, onClose, onMint }: MintModalProps) {
               px-6 py-2 rounded font-bold border-2 border-black
               transition-all shadow-[4px_4px_0_#000]
               active:shadow-none active:translate-x-[2px] active:translate-y-[2px]
-              ${isComplete 
+              ${isComplete
                 ? "bg-black text-white hover:bg-[#6315bbbc] hover:text-black"
                 : "bg-gray-300 text-gray-600 cursor-not-allowed border-gray-400 shadow-none"}
             `}

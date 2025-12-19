@@ -80,12 +80,12 @@ export function useCounterProgram() {
     queryFn: () => connection.getParsedAccountInfo(programId),
   })
 
-  // const getUsersRegistraionAccount = useQuery({
+  // const useUsersRegistrationAccount = useQuery({
   //   queryKey:['get-only-registration-account',{cluster,publicKey}],
   //   queryFn:()=> program.account.eventRegistration.fetchNullable()
   // })
 
-  const getUsersRegistraionAccount = (eventAccount: PublicKey) => {
+  const useUsersRegistrationAccount = (eventAccount: PublicKey) => {
     return useQuery({
       enabled: !!publicKey && !!eventAccount && !!program,
       queryKey: [
@@ -291,7 +291,7 @@ export function useCounterProgram() {
     closeEventAccount,
     CloseRegistrationAccount,
     mintNft,
-    getUsersRegistraionAccount
+    useUsersRegistrationAccount
   }
 }
 

@@ -5,6 +5,7 @@ import CreateEvent from './CreateEvent';
 import { WalletButton } from '../solana/solana-provider';
 import { CounterList } from '../counter/counter-ui';
 import { Toaster } from "sonner";
+import Image from 'next/image';
 
 type ViewType = 'projects' | 'profile' | 'createnewevent' | 'events';
 
@@ -15,8 +16,10 @@ const Home: React.FC = () => {
     if (currentView === 'profile') {
       return (
         <div className="flex flex-col items-center text-center space-y-4 p-6 sm:mt-15">
-          <img
-            className="w-53 h-50"
+          <Image
+            width={153}
+            height={50}
+            unoptimized
             src="https://files.catbox.moe/4dmspx.png"
             alt="eventsdotfun logo"
           />
@@ -58,8 +61,10 @@ const Home: React.FC = () => {
           <div className="border-b-2 border-black p-4 bg-[#f4f1e9] flex-shrink-0">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
               <div className="flex items-center space-x-2">
-                <img
-                  className="w-13 h-12"
+                <Image
+                  width={35}
+                  height={35}
+                  unoptimized
                   src="https://files.catbox.moe/4dmspx.png"
                   alt="logo"
                 />
@@ -77,21 +82,21 @@ const Home: React.FC = () => {
                   className="text-2xl font-bold hover:scale-110 transition-transform"
                   title="Create New Event"
                 >
-                  <img className='h-9 w-10' src="https://files.catbox.moe/7m9p5z.png" alt="" />
+                  <Image width={40} height={11} unoptimized src="https://files.catbox.moe/7m9p5z.png" alt="" />
                 </button>
                 <button
                   onClick={() => setCurrentView('events')}
                   className="text-2xl font-bold hover:scale-110 transition-transform"
                   title="Home"
                 >
-                  <img className='h-11 w-12' src="https://files.catbox.moe/5l1xv4.png" alt="" />
+                  <Image width={50} height={11} unoptimized src="https://files.catbox.moe/5l1xv4.png" alt="" />
                 </button>
 
                 <button
                   className="text-2xl font-bold hover:scale-110 transition-transform"
                   title="twitter"
                 >
-                  <a href="https://x.com/eventsdotfun"><img className='h-12 w-12' src="https://files.catbox.moe/9irnnl.png" alt="" /></a>
+                  <a href="https://x.com/eventsdotfun"><Image width={50} height={12} unoptimized src="https://files.catbox.moe/9irnnl.png" alt="" /></a>
                 </button>
                 <WalletButton />
               </div>
@@ -104,7 +109,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <Toaster/>
+      <Toaster />
     </div>
   );
 };

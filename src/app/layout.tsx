@@ -12,15 +12,15 @@ export const metadata: Metadata = {
   }
 }
 
-const links: { label: string; path: string }[] = [
-  // More links...
-  { label: 'Home', path: '/reboot' },
-  { label: 'Account', path: '/account' },
-  { label: 'Counter Program', path: '/counter' },
-  { label: 'reboot', path: '/reboot' }
-]
+// const links: { label: string; path: string }[] = [
+//   // More links...
+//   { label: 'Home', path: '/reboot' },
+//   { label: 'Account', path: '/account' },
+//   { label: 'Counter Program', path: '/counter' },
+//   { label: 'reboot', path: '/reboot' }
+// ]
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout() {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
