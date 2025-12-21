@@ -418,7 +418,7 @@ function CounterCard({ account }: { account: PublicKey }) {
               {eventDescription}
             </p>
             <div className='flex'>
-              <Image width={5} height={5} unoptimized src="https://files.catbox.moe/qatofg.png" alt="clock" />
+              <Image width={20} height={5} unoptimized src="https://files.catbox.moe/qatofg.png" alt="clock" />
               <p className='text-sm ml-3'> {formatShortDate(Number(start_time))} - {formatShortDate(Number(end_time))}
               </p>
             </div>
