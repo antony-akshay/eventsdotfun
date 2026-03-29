@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 interface UploadProps {
   event_name: string;
@@ -15,6 +16,7 @@ export default function UploadComponent({
   description,
   onUploadComplete,
 }: UploadProps) {
+
   const [status, setStatus] = useState<UploadStatus>("idle");
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,6 +24,13 @@ export default function UploadComponent({
     if (!file) return;
 
     setStatus("uploading");
+
+    if (!event_name || !description) {
+      setStatus("error")
+      toast.error("please provide event name and description");
+      return;
+    }
+
 
     const form = new FormData();
     form.append("file", file);
@@ -54,14 +63,13 @@ export default function UploadComponent({
       <label
         className={`border-2 border-black rounded h-12 flex items-center justify-center
           text-sm font-medium cursor-pointer transition-colors w-full
-          ${
-            status === "success"
-              ? "bg-purple-300 cursor-default"
-              : status === "error"
+          ${status === "success"
+            ? "bg-purple-300 cursor-default"
+            : status === "error"
               ? "bg-red-300 hover:bg-red-400"
               : status === "uploading"
-              ? "bg-yellow-300 cursor-wait"
-              : "bg-gray-300 hover:bg-gray-400"
+                ? "bg-yellow-300 cursor-wait"
+                : "bg-gray-300 hover:bg-gray-400"
           }`}
       >
         {status === "idle" && "Upload the image"}
