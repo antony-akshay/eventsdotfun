@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://eventsdotfun.vercel.app
+
+# Sitemaps
+Sitemap: https://eventsdotfun.vercel.app/sitemap.xml

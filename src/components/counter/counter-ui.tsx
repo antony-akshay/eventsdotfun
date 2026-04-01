@@ -285,7 +285,7 @@ export function CounterList() {
       {accounts.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
       ) : accounts.data?.length ? (
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {accounts.data?.map((account) => (
             <AccountItem key={account.publicKey.toString()} account={account.publicKey} />
           ))}
@@ -382,16 +382,18 @@ function CounterCard({ account }: { account: PublicKey }) {
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
-    <div className="relative bg-white w-[500px] h-[250px] overflow-hidden rounded-xl border border-black 
-    // {shadow-[6px_6px_0_#000]}
+    <div className="relative bg-white w-full max-w-[500px] 
+  min-h-[220px] md:h-[250px]
+  overflow-hidden rounded-xl border border-black
+  mx-auto
     ">
 
       {/* MAIN CONTENT */}
-      <div className="flex h-full">
+      <div className="flex flex-col md:flex-row h-full">
 
         {/* LEFT SIDE - IMAGE */}
-        <div className="w-2/5 flex items-center justify-center p-6">
-          <div className="relative w-[180px] h-[160px] bg-gradient-to-br from-gray-700 to-gray-900 rounded-lg overflow-hidden">
+        <div className="w-full md:w-2/5 flex items-center justify-center p-3 md:p-6">
+          <div className="relative w-full max-w-[180px] h-[140px] md:h-[160px]">
             {imageUrl && (
               <Image
                 src={imageUrl}
@@ -406,15 +408,15 @@ function CounterCard({ account }: { account: PublicKey }) {
 
 
         {/* RIGHT SIDE CONTENT */}
-        <div className="w-3/5 p-6 flex flex-col justify-between">
+        <div className="w-full md:w-3/5 p-4 md:p-6 flex flex-col justify-between">
 
           {/* Title + Description */}
           <div className="space-y-3">
-            <h2 className="text-xl font-semibold text-gray-800 mt-6">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-800 mt-2 md:mt-6">
               {eventName}
             </h2>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               {eventDescription}
             </p>
             <div className='flex'>
@@ -425,7 +427,7 @@ function CounterCard({ account }: { account: PublicKey }) {
           </div>
 
           {/* BUTTONS */}
-          <div className="flex justify-center gap-4 mt-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
             {/* Register */}
             <button
               onClick={handleRegistration}
@@ -793,7 +795,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
   ) : (
     <>
       <>
-        <div className="relative bg-white w-[500px] h-[250px] overflow-hidden rounded-xl ">
+        <div className="relative bg-white w-full max-w-[500px] min-h-[220px] md:h-[250px] overflow-hidden rounded-xl mx-auto">
           {/* Top Scalloped Edge */}
           <div className="absolute top-0 left-0 right-0 h-2 flex -translate-y-1/2 z-10">
             {Array.from({ length: 15 }).map((_, i) => (
@@ -824,10 +826,10 @@ function RegistrationCard({ account }: { account: PublicKey }) {
           <div className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#f9f6ef] rounded-full z-20" />
 
           {/* Ticket Content */}
-          <div className="flex h-full relative z-5">
+          <div className="flex flex-col md:flex-row h-full relative z-5">
             {/* Left Side – Icon */}
-            <div className="w-2/5 flex items-center justify-center p-6">
-              <div className="w-[180px] h-[160px] bg-linear-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="w-full md:w-2/5 flex items-center justify-center p-3 md:p-6">
+              <div className="w-full max-w-[180px] h-[140px] md:h-[160px] bg-linear-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
                 {imageUrl && (
                   <Image
                     width={180}
@@ -842,14 +844,14 @@ function RegistrationCard({ account }: { account: PublicKey }) {
             </div>
 
             {/* Right Side – Actual Registration Details */}
-            <div className="w-3/5 p-6 flex flex-col justify-between">
+            <div className="w-full md:w-3/5 p-4 md:p-6 flex flex-col justify-between">
               {/* Title + account info */}
               <div className="space-y-3">
-                <h2 className="text-xl font-semibold text-gray-800 mt-6">
+                <h2 className="text-lg md:text-xl font-semibold text-gray-800 mt-2 md:mt-6">
                   {eventName}
                 </h2>
 
-                <p className="text-sm text-gray-500 break-all">
+                <p className="text-xs md:text-sm text-gray-500 break-all">
                   {/* Account:{" "} */}
                   {eventDescription}
                   {/* <ExplorerLink
@@ -861,7 +863,7 @@ function RegistrationCard({ account }: { account: PublicKey }) {
 
               {/* Buttons */}
               {/* Buttons */}
-              <div className="flex justify-center gap-4 mt-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
                 {/* Cancel Button */}
                 <button
                   onClick={handleCloseRegistration}
